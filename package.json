@@ -16,7 +16,7 @@
   "scripts": {
     "bot": "node src/index.js"
   },
-  "author": "",
+  "author": "Luis Fernando",
   "license": "ISC",
   "description": ""
 }
