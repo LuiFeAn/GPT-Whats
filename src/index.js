@@ -1,157 +1,170 @@
 import { ChatGPTAPIBrowser } from 'chatgpt';
-import readline from 'readline';
 import { Client } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
 import dotenv from 'dotenv';
-import path from 'path';
 
 dotenv.config();
 
-const read = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
+const whats = new Client();
+
+const browser = new ChatGPTAPIBrowser({
+    email: process.env.CHATGPT_EMAIL,
+    password: process.env.CHATGPT_PASSWORD,
+    isGoogleLogin:true,
 });
 
-function StartQuestion(){
-    read.question('Você deseja que o BOT esteja disponível exclusivamente para você ou para seus contatos ? \n 1 - Meus Contatos \n 2 - Para mim \n Opção: ',insertMode);
-}
-
-StartQuestion();
-
-async function insertMode( response ){
-
-    const validResponses = ['1','2'];
-
-    if( !validResponses.includes(response) ){
-        console.log('🤖: Opção inválida !');
-        return StartQuestion();
-    }
-
-    const mode = {
-        '1': 'message',
-        '2': 'message_create'
-    };
-
-    const browser = new ChatGPTAPIBrowser({
-        email: process.env.CHATGPT_EMAIL,
-        password: process.env.CHATGPT_PASSWORD,
-        isGoogleLogin:true,
-        executablePath: path.join("C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"),
-    });
-
-
+async function StartBot(){
+    
     console.log('🤖: Aguarde um pouco enquanto preparo tudo.')
     
     try{
-
+    
         await browser.initSession();
-
+    
     }catch(err){
         
         console.log('🤖: Ops ! isso está demorando mais que o normal. Mas não se preocupe, já estou trabalhando nisto');
-
+    
     }
     
-    const whats = new Client();
-
+    
     whats.initialize();
-
+    
     console.log('🤖: Pronto ! tudo certo para iniciarmos. \n Por favor, utilize o QrCode abaixo para se conectar ao seu WhatsApp: ');
-
+    
     whats.on('qr', qr => qrcode.generate(qr,{
         small:true
     }));
-
-    whats.on('authenticated', () => {
-
-        console.log('🤖: Autenticação realizada com sucesso !')
-
-    });
-
-    whats.on('ready', () => {
-
-        console.log('🤖: Estou pronto para ser utilizado !');
-
-    });
-
-    whats.on(mode[response],sendGPTMessage);
-
-
-    async function sendGPTMessage(message){
-
-        const { body: commandMessage } = message;
-
-        if ( commandMessage.includes('$:')){
-
-            async function gpt(){
-
-               try{
-
-                    const { response: gptResponse } = await browser.sendMessage(commandMessage);
-
-                    await message.reply(`🤖: ${gptResponse}`);
-
-                    await whats.sendMessage(message.from,'O que você gostaria de fazer com este resultado ? \n 1 - Criar um Arquivo \n 2 - Nada');
-
-                    whats.on(mode[response], async ( backMessage ) => {
-                        
-                       const validBackMessage = ['1','2'];
-
-                       if( !validBackMessage.includes(backMessage) ){
-
-                            backMessage.reply('🤖: Opção inválida !');
-
-                       }
-
-                       const verifyBackMessage = {
-
-                        '1': async () => {
-
-                           await whats.sendMessage(backMessage.from,'GPT🤖:Qual tipo de arquivo você gostaria de criar ?');
-
-                           whats.on(mode[response], ( archive ) => {
-
-                               const validArchives = ['pdf','json','excel','js'];
-                               
-                               if( !validArchives.includes(archive) ){
-                                   
-                                   whats.sendMessage(archive.from,'GPT🤖: Formato de arquivo inválido');
-       
-                               }
-       
-                              })
-
-                        },
-
-                        '2': () => {
-
-                        }
-
-                      };
-
-                      verifyBackMessage[backMessage];
-
-
-                    });
-
-               }catch(err){
-
-                    whats.sendMessage(message.from,'GPT🤖: Desculpe. Houve algum erro. Tente novamente mais tarde');
-
-               }
     
+    whats.on('authenticated', () => {
+    
+        console.log('🤖: Autenticação realizada com sucesso !')
+    
+    });
+    
+    whats.on('ready', () => {
+    
+        console.log('🤖: Estou pronto para ser utilizado !');
+    
+    });
+
+    let flux = 'welcome-user';
+
+    let converId = '';
+
+
+    whats.on('message', async message => {
+
+        const { body } = message;
+
+        const verifyFlux = {
+        
+            'welcome-user': async () => {
+    
+                await whats.sendMessage(message.from,'Olá, me chamo K$T. Sou um assistente virtual que faz uso do Chat GPT para responder QUALQUER coisa. \n Primeiramente, me informe o que você deseja. \n 1 - Criar uma Nova Sessão \n 2 - Recuperar uma sessão \n 3 - O que são sessões ?');
+    
+                flux = 'choice-option';
+    
+            },
+    
+            'choice-option': async () => {
+    
+                const validInitialMessages = ['1','2','3'];
+        
+                if( !validInitialMessages.includes(body) ){
+        
+                    await whats.sendMessage(message.from,'Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
+                    return
+        
+                }
+        
+                flux = 'handle-with-choice-option';
+    
+            },
+    
+            'handle-with-choice-option': async () => {
+    
+                const verifyChoiceOption = {
+    
+                    '1': async () => {
+
+                        await whats.sendMessage(message.from,'Aguarde enquanto estou criando uma nova sessão !');
+
+                        const { conversationId } = await browser.sendMessage('...');
+
+                        await whats.sendMessage(message.from,`Sessão criada com sucesso. Segue abaixo o ID da sua sessão:`);
+
+                        await whats.sendMessage(message.from,`*${conversationId}*`);
+
+                        converId = conversationId;
+
+                        await whats.sendMessage(message.from,'Utilize este ID caso queria recuperar esta sessão futuramente');
+
+                        await whats.sendMessage(message.from,'No que eu posso ajudar ?');
+
+                        flux = 'make-a-question';
+
+
+
+                    },
+
+                    '2': async () => {
+
+                        await whats.sendMessage(message.from,'Por favor, envie o código da sessão ao qual você deseja recupear');
+
+                    },
+
+                    '3': async () => {
+
+                        await whats.sendMessage(message.from,'Sessões são como uma determinada conversa da qual você manteve comigo antes. Pense como se fosse um chat com várias mensagens sobre um determinado assunto 😆');
+
+                        flux = 'choice-option';
+
+                    }
+
+                }
+
+                verifyChoiceOption[body]();
+
+            },
+
+            'make-a-question': async () => {
+
+                async function sending(){
+
+                   try{
+
+                        const { response } = await browser.sendMessage(body,{
+                            conversationId: converId
+                        });
+
+                        await whats.sendMessage(message.from,response);
+
+                   }catch(err){
+
+                        await whats.sendMessage(message.from,'Ops ! ocorreu algum erro e não pude obter sua resposta. Tente novamente mais tarde');
+
+                   }
+
+                }
+                
+                sending();
+
+                whats.sendMessage(message.from,'Digitando...');
+
             }
-
-            gpt();
-
-            whats.sendMessage(message.from,`GPT🤖: Digitando...`);
-
+    
+    
         }
-    }
+    
+        verifyFlux[flux]();
+
+    });
+
 
 }
 
-
+StartBot();
 
 
 
