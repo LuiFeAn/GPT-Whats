@@ -50,7 +50,8 @@ async function StartBot(){
 
     let flux = 'welcome-user';
 
-    let converId = '';
+    let conversation = '';
+    let msg = '';
 
 
     whats.on('message', async message => {
@@ -88,19 +89,21 @@ async function StartBot(){
     
                     '1': async () => {
 
+                        await whats.sendMessage(message.from,'No que eu posso ajudar ?');
+
                         await whats.sendMessage(message.from,'Aguarde enquanto estou criando uma nova sessão !');
 
-                        const { conversationId } = await browser.sendMessage('...');
+                        const { conversationId, messageId } = await browser.sendMessage('...');
 
                         await whats.sendMessage(message.from,`Sessão criada com sucesso. Segue abaixo o ID da sua sessão:`);
 
                         await whats.sendMessage(message.from,`*${conversationId}*`);
 
-                        converId = conversationId;
-
                         await whats.sendMessage(message.from,'Utilize este ID caso queria recuperar esta sessão futuramente');
 
-                        await whats.sendMessage(message.from,'No que eu posso ajudar ?');
+
+                        conversation = conversationId;
+                        msg = messageId;
 
                         flux = 'make-a-question';
 
@@ -134,14 +137,21 @@ async function StartBot(){
 
                    try{
 
+                        console.log({
+                            conversation,
+                            msg
+                        })
+
                         const { response } = await browser.sendMessage(body,{
-                            conversationId: converId
+                            conversationId: conversation,
+                            messageId: msg
                         });
 
                         await whats.sendMessage(message.from,response);
 
                    }catch(err){
 
+                        console.log(err);
                         await whats.sendMessage(message.from,'Ops ! ocorreu algum erro e não pude obter sua resposta. Tente novamente mais tarde');
 
                    }
