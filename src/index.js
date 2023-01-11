@@ -161,19 +161,7 @@ async function StartBot(){
 
                    try{
 
-<<<<<<< HEAD
-                        console.log({
-                            conversation,
-                            msg
-                        })
-
-                        const { response } = await browser.sendMessage(body,{
-                            conversationId: conversation,
-                            messageId: msg
-                        });
-=======
                         const { response } = await browser.sendMessage(user.userMessage);
->>>>>>> 9b4c5d8894f01e2435070593c639dc07939bd9c8
 
                         await whats.sendMessage(message.from,response);
 
