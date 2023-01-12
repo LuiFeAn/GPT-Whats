@@ -1,13 +1,13 @@
 import { ChatGPTAPIBrowser } from 'chatgpt';
 import Whatsapp from 'whatsapp-web.js';
-import qrcode from 'qrcode-terminal';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
 
-import onMessage from './listeners/onMessage.js';
-
 import { IUser } from './interfaces/IUser.js';
+
+import whatsListeners from './listeners/WhatsListeners.js';
+
 
 dotenv.config();
 
@@ -44,18 +44,25 @@ async function StartBot(){
 
     console.log('🤖: Pronto ! tudo certo para iniciarmos.');
 
-    const verifySession = fs.existsSync(path.join('./localAuth'));
+    const verifySession = fs.existsSync(path.join('./localAuth/auth.key'));
 
-    if ( !verifySession ){
+    if ( verifySession ){
+
+        console.log('🤖: Bem-vindo novamente !');
+
+    }else{
 
         console.log('🤖: Ops ! parece que você não está conectado ao WhatsApp. \n Por favor, utilize o QrCode abaixo para se autenticar');
-    }
 
-    console.log('🤖: Bem-vindo novamente !')
+    }
     
-    whats.on('qr', qr => qrcode.generate(qr,{
-        small:true
-    }));
+    whats.on('qr',whatsListeners.onQr);
+
+    whats.on('authenticated',whatsListeners.onAuth);
+
+    whats.on('ready',whatsListeners.onReady);
+
+    whats.on('message',whatsListeners.onMessage);
 
     whats.initialize();
 

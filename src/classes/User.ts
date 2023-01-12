@@ -14,11 +14,6 @@ class User {
 
     }
 
-    sendCommand(command: string){
-
-    }
-
-
 }
 
 export default User;

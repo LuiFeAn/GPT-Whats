@@ -2,16 +2,17 @@ import { Bot } from "../types/Bot.js";
 
 import { whats, gpt } from "../index.js";
 
-export default async function bot( { messageOptions, userMessage, state }: Bot ){
+export default async function bot( { messageOptions, authUser }: Bot ){
 
+    const { message } = authUser;
 
     const states = {
 
         'welcome': async function(){
 
-            await whats.sendMessage(userMessage,`Olá , me chamo K$T. Sou um assistente virtual que faz uso do Chat GPT para responder QUALQUER coisa. \n Primeiramente, me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n *2 - Recuperar uma sessão* \n *3 - O que são sessões ?*`);
+            await whats.sendMessage(message,`Olá , me chamo K$T. Sou um assistente virtual que faz uso do Chat GPT para responder QUALQUER coisa. \n Primeiramente, me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n *2 - Recuperar uma sessão* \n *3 - O que são sessões ?*`);
 
-            state = 'before-select-option';
+            authUser.state = 'before-select-option';
 
         },
 
@@ -19,9 +20,9 @@ export default async function bot( { messageOptions, userMessage, state }: Bot )
 
             const validInitialMessages = ['1','2','3'];
             
-            if( !validInitialMessages.includes(userMessage)){
+            if( !validInitialMessages.includes(message)){
     
-                await whats.sendMessage(userMessage,'Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
+                await whats.sendMessage(message,'Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
                 return
     
             }
@@ -34,6 +35,6 @@ export default async function bot( { messageOptions, userMessage, state }: Bot )
 
     }
 
-    await states[state]();
+    await states[authUser.state]();
 
 }
