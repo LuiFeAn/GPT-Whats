@@ -3,4 +3,12 @@
 # Variável de ambiente
 .env
 
+# Dependências
+
 node_modules
+
+# Build
+Build
+
+# Sessões
+localAuth
