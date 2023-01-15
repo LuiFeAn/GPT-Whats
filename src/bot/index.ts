@@ -1,6 +1,5 @@
 import { Bot } from "../types/Bot.js";
-
-import { whats, gpt } from "../index.js";
+import { whats, gpt } from "../providers/index.js";
 
 export default async function bot( { messageOptions, authUser }: Bot ){
 
@@ -19,12 +18,12 @@ export default async function bot( { messageOptions, authUser }: Bot ){
         'before-select-option': async function(){
 
             const validInitialMessages = ['1','2','3'];
-            
+
             if( !validInitialMessages.includes(message)){
-    
+
                 await whats.sendMessage(message,'Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
                 return
-    
+
             }
 
         },

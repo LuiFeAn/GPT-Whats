@@ -1,15 +1,12 @@
-import fs from 'fs';
-import qrcode from 'qrcode-terminal';
-
-import bot from '../bot/index.js';
-
 import WAWebJS, { ClientSession } from 'whatsapp-web.js';
 
-import User from '../classes/User.js';
+import fs from 'fs';
+import qrcode from 'qrcode-terminal';
+import bot from '../bot/index.js';
 
-import { users, gpt } from '../index.js';
+import UserRepository from '../repos/user-repository.js';
 
-class WhatsListeners {
+class WhatsListener {
 
     onAuth( auth: ClientSession ){
 
@@ -25,21 +22,19 @@ class WhatsListeners {
 
         const { body, id: { remote: phone } } = message;
 
-        const userAlreadyExists = users.find( user => user.phone === phone);
+        const userAlreadyExists = UserRepository.find(phone);
 
         if ( !userAlreadyExists ){
 
-            users.push(new User(
-                {
-                    phone,
-                    message: body,
-                    state:'welcome'
-                }
-            ));
+            UserRepository.register({
+                phone,
+                message: body,
+                state:'welcome'
+            });
 
         }
 
-        const currentUser = users.find( user => user.phone === phone );
+        const currentUser = UserRepository.find(phone);
 
         if( currentUser ){
 
@@ -72,4 +67,4 @@ class WhatsListeners {
 
 }
 
-export default new WhatsListeners();
+export default new WhatsListener();
