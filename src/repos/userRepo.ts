@@ -5,12 +5,13 @@ import { users } from "../database/index.js";
 
 class UserRepository {
 
-    register({phone,message,state}: IUser){
+    register({phone,message,state, sessions}: IUser){
 
         users.push({
             phone,
             message,
-            state
+            state,
+            sessions
         })
 
     }

@@ -88,29 +88,50 @@ class Bot {
 
                 'session': async function(){
 
-                    await whats.sendMessage(phone,'Digitando...');
 
 
-                    if ( !user.conversationId && !user.messageId ){
+                    await whats.sendMessage(phone,'*Digitando...*');
+
+                    if ( user.sessions.length === 0 ){
 
                         const { response, messageId, conversationId } = await gpt.sendMessage(message);
 
-                        user.conversationId = conversationId,
-                        user.messageId = messageId;
+                        const sessionId = Math.floor( Math.random () * 1323234);
 
-                        return await whats.sendMessage(phone,response);
+                        user.sessions.push({
+                            sessionId,
+                            messageId,
+                            conversationId
+                        });
+
+                        await whats.sendMessage(phone,' *Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ')
+
+                        await whats.sendMessage(phone,` *${sessionId.toString()}* `);
+
+                        whats.sendMessage(phone,response);
+
+                        return;
+
 
                     }
 
-                    const { response, conversationId, messageId } = await gpt.sendMessage(message,{
-                        conversationId: user.conversationId,
-                        parentMessageId: user.messageId
-                    });
+                    const currentUserSession = user.sessions[0];
 
-                    user.conversationId = conversationId;
-                    user.messageId = messageId;
+                    if ( currentUserSession ){
 
-                    await whats.sendMessage(phone,response);
+                        const { response, messageId, conversationId } = await gpt.sendMessage(message,{
+                            conversationId: currentUserSession.conversationId,
+                            parentMessageId: currentUserSession.messageId
+                        });
+
+                        currentUserSession.messageId = messageId;
+                        currentUserSession.conversationId = conversationId
+
+                        await whats.sendMessage(phone,response);
+
+
+
+                    }
 
 
                 },

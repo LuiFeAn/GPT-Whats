@@ -30,7 +30,8 @@ class WhatsListener {
             UserRepository.register({
                 phone,
                 message: body,
-                state:'welcome'
+                state:'welcome',
+                sessions:[],
             });
 
 
