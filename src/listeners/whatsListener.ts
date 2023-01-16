@@ -10,7 +10,7 @@ class WhatsListener {
 
     onAuth( auth: ClientSession ){
 
-        console.log('🤖: Autenticado com sucesso !');
+        console.log('🤖: Fui autenticado com sucesso ! \n');
 
         fs.writeFile('./localAuth/auth.key','Autenticado',function(){
 
@@ -18,13 +18,13 @@ class WhatsListener {
 
     }
 
-    onMessage( message: WAWebJS.Message ){
+    async onMessage( message: WAWebJS.Message, botName: string ){
 
         const { body, id: { remote: phone } } = message;
 
-        const userAlreadyExists = UserRepository.find(phone);
+        const userExists = UserRepository.find(phone);
 
-        if ( !userAlreadyExists ){
+        if ( !userExists ){
 
             UserRepository.register({
                 phone,
@@ -32,18 +32,20 @@ class WhatsListener {
                 state:'welcome'
             });
 
+
         }
 
-        const currentUser = UserRepository.find(phone);
+        const user = UserRepository.find(phone);
 
-        if( currentUser ){
+        if( user ){
 
-            currentUser.message = body;
+            user.message = body;
 
             bot(
                 {
-                    messageOptions: message,
-                    authUser: currentUser,
+                    options: message,
+                    authUser: user,
+                    botName: botName,
                 }
             );
 
@@ -61,7 +63,7 @@ class WhatsListener {
 
     onReady(){
 
-        console.log('🤖: Estou pronto para uso !');
+        console.log('🤖: Estou pronto para uso ! \n');
 
     }
 

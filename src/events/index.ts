@@ -5,10 +5,12 @@ import fs from 'fs';
 
 import WhatsListener from "../listeners/whatsListener.js";
 
-async function Events(){
+import Bot from '../bot/Bot.js';
+
+async function Events() {
 
 
-    console.log('🤖: Aguarde um pouco enquanto preparo tudo.')
+    console.log('🤖: Olá ! Aguarde um pouco enquanto preparo tudo. \n')
 
     // try{
 
@@ -20,29 +22,40 @@ async function Events(){
 
     // }
 
-    console.log('🤖: Pronto ! tudo certo para iniciarmos.');
 
-    const verifySession = fs.existsSync(path.join('./localAuth/auth.key'));
+    Bot.Initialize(function(){
 
-    if ( verifySession ){
+        fs.readFile('botname.txt','utf-8', (err,data) => {
 
-        console.log('🤖: Bem-vindo novamente !');
+            if( data ){
 
-    }else{
+                const verifySession = fs.existsSync(path.join('./localAuth/auth.key'));
 
-        console.log('🤖: Ops ! parece que você não está conectado ao WhatsApp. \n Por favor, utilize o QrCode abaixo para se autenticar');
+                if ( verifySession ){
 
-    }
+                    console.log('🤖: Opa ! Parece que estou na ativa novamente ! \n');
 
-    whats.on('qr',WhatsListener.onQr);
+                }else{
 
-    whats.on('authenticated',WhatsListener.onAuth);
+                    console.log('🤖: Acabo de perceber que ainda não estou vinculado a um Whatsapp ! Então, por favor, utilize o QrCode abaixo para me autenticar: ');
 
-    whats.on('ready',WhatsListener.onReady);
+                }
 
-    whats.on('message',WhatsListener.onMessage);
+                whats.on('qr',WhatsListener.onQr);
 
-    whats.initialize();
+                whats.on('authenticated',WhatsListener.onAuth);
+
+                whats.on('ready',WhatsListener.onReady);
+
+                whats.on('message', message => WhatsListener.onMessage(message,data.toString()));
+
+                whats.initialize();
+
+            }
+
+        });
+
+    });
 
 
 }

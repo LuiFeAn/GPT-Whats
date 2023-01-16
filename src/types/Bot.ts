@@ -6,7 +6,8 @@ import { State } from "./State.js"
 
 export type Bot = {
 
-    messageOptions: WAWebJS.Message,
+    options: WAWebJS.Message,
     authUser: IUser,
+    botName: string
 
 }
