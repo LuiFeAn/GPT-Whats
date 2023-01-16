@@ -35,18 +35,28 @@ Este projeto tem por fim ser um BOT pessoal no Whatsapp, cujo qual o usuário po
 Obs: Em desenvolvimento
 
 ## 👨‍💻 Instalação
-```bash
+
 # Clone o repositório
 git clone https://github.com/LuiFeAn/WhatsChatBOT
+
+# Crie um arquivo .env com as seguintes informações e insira seu login do ChatGPT:
+
+CHATGPT_EMAIL= seuemaildochatgpt@gmail.com
+CHATGPT_PASSWORD= suasenhadochatgpt123
 
 # Instale todos os pacotes
 npm install || yarn install
 
-## Build
+## Build 🔥🍕
 
 npm run build || yarn run build
 
+## Inicialização 👽
+
+```bash
+
 ## 🤖 Inicialização ( Produção )
+## OBS: Necessário realizar a BUILD
 
 npm run bot || yarn run bot
 
