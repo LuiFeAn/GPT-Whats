@@ -1,11 +1,17 @@
 import { State } from "../types/State.js";
 
+type GptSessions = {
+
+    messageId: string,
+    conversationId: string,
+
+}
+
 export interface IUser {
 
     phone: string,
     message: string,
     state: State,
-    messageId?: string,
-    conversationId?: string,
+    sessions: GptSessions [],
 
 }
