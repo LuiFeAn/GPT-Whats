@@ -39,12 +39,12 @@ Obs: Em desenvolvimento
 # Clone o repositório
 git clone https://github.com/LuiFeAn/WhatsChatBOT
 
-# Crie um arquivo .env com as seguintes informações e insira seu login do ChatGPT:
+## Crie um arquivo .env com as seguintes informações e insira seu login do ChatGPT:
 
 CHATGPT_EMAIL= seuemaildochatgpt@gmail.com
 CHATGPT_PASSWORD= suasenhadochatgpt123
 
-# Instale todos os pacotes
+## Instale todos os pacotes
 npm install || yarn install
 
 ## Build 🔥🍕
