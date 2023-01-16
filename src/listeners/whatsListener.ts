@@ -5,7 +5,7 @@ import qrcode from 'qrcode-terminal';
 
 import { whats } from '../providers/index.js';
 
-import UserRepository from '../repos/userRepo.js';
+import UserRepository from '../repositories/userRepository.js';
 
 import { bot } from '../providers/index.js';
 

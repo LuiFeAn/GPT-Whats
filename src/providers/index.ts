@@ -4,7 +4,7 @@ import Whatsapp from 'whatsapp-web.js';
 import path from 'path';
 import dotenv from 'dotenv';
 
-import Bot from "../bot/Bot.js";
+import Bot from "../brain/index.js";
 
 
 dotenv.config();
