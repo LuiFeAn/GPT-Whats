@@ -3,18 +3,40 @@ import read from 'readline';
 
 import { whats, gpt } from '../providers/index.js';
 
+import session from '../session/index.js';
+
 import { IBot } from '../interfaces/IBot.js';
+import { IUser } from '../interfaces/IUser.js';
 
 const command = read.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
 
+
+type BotOptions = {
+
+    audio: boolean
+
+}
+
+
 class Bot {
+
+    private options;
+
+    constructor(options: BotOptions){
+
+        this.options = options;
+
+    }
 
 
     states( { options, user }: IBot ){
 
+        const commands = this.commands;
+
+        const botOptions = this.options;
 
         fs.readFile('botname.txt', 'utf-8', async function(error,name) {
 
@@ -70,6 +92,8 @@ class Bot {
 
                             await whats.sendMessage(phone,'Em desenvolvimento !');
 
+                            return
+
                         },
 
                         '3': function(){
@@ -94,44 +118,16 @@ class Bot {
 
                     if ( user.sessions.length === 0 ){
 
-                        const { response, messageId, conversationId } = await gpt.sendMessage(message);
-
-                        const sessionId = Math.floor( Math.random () * 1323234);
-
-                        user.sessions.push({
-                            sessionId,
-                            messageId,
-                            conversationId
-                        });
-
-                        await whats.sendMessage(phone,' *Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ')
-
-                        await whats.sendMessage(phone,` *${sessionId.toString()}* `);
-
-                        whats.sendMessage(phone,response);
+                        session.createSession(user);
 
                         return;
 
 
                     }
 
-                    const currentUserSession = user.sessions[0];
+                    commands(user, botOptions);
 
-                    if ( currentUserSession ){
-
-                        const { response, messageId, conversationId } = await gpt.sendMessage(message,{
-                            conversationId: currentUserSession.conversationId,
-                            parentMessageId: currentUserSession.messageId
-                        });
-
-                        currentUserSession.messageId = messageId;
-                        currentUserSession.conversationId = conversationId
-
-                        await whats.sendMessage(phone,response);
-
-
-
-                    }
+                    session.getSession(user);
 
 
                 },
@@ -142,6 +138,54 @@ class Bot {
             await states[user.state]();
 
         });
+
+
+    }
+
+    async commands( user: IUser, options: BotOptions ){
+
+        const { phone, message } = user;
+
+        const command = message as 'converse comigo por audio' | 'desativar conversa por áudio';
+
+        command.toLocaleLowerCase();
+
+
+        const verifyCommand = {
+
+            'converse comigo por audio': async function(){
+
+                if( !options.audio ){
+
+                    await whats.sendMessage(phone,'Claro ! a partir de agora irei conversar com você por áudio.');
+
+                    options.audio = true;
+
+                    return
+
+                }
+
+                await whats.sendMessage(phone,'Já estou conversando por áudio com você !');
+
+            },
+
+            'desativar conversa por áudio': async function(){
+
+                if ( !options.audio ){
+
+                    await whats.sendMessage(phone,'A conversa por áudio já está desativada !');
+
+                    return
+
+                }
+
+                await whats.sendMessage(phone,'Conversa por áudio desativada com sucesso !');
+
+            }
+
+        }
+
+        await verifyCommand[command]();
 
 
     }
@@ -192,4 +236,4 @@ class Bot {
 
 }
 
-export default new Bot();
+export default Bot;

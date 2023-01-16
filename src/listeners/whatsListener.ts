@@ -5,7 +5,7 @@ import qrcode from 'qrcode-terminal';
 
 import UserRepository from '../repos/userRepo.js';
 
-import Bot from '../bot/Bot.js';
+import { bot } from '../providers/index.js';
 
 class WhatsListener {
 
@@ -43,7 +43,7 @@ class WhatsListener {
 
             user.message = body;
 
-            Bot.states(
+            bot.states(
                 {
                     options: message,
                     user

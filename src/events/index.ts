@@ -1,11 +1,9 @@
-import { whats, gpt } from '../providers/index.js';
+import { whats, gpt, bot } from '../providers/index.js';
 
 import path from 'path';
 import fs from 'fs';
 
 import WhatsListener from "../listeners/whatsListener.js";
-
-import Bot from '../bot/Bot.js';
 
 import BotError from '../errors/botError.js';
 import { ChatGPTError } from 'chatgpt';
@@ -36,7 +34,7 @@ async function Events() {
     }
 
 
-    Bot.Initialize(function(){
+    bot.Initialize(function(){
 
         const verifySession = fs.existsSync(path.join('./localAuth/auth.key'));
 

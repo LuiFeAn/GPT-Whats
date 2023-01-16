@@ -4,6 +4,8 @@ import Whatsapp from 'whatsapp-web.js';
 import path from 'path';
 import dotenv from 'dotenv';
 
+import Bot from "../bot/Bot.js";
+
 
 dotenv.config();
 
@@ -19,5 +21,10 @@ export const whats = new Whatsapp.Client({
         dataPath:'./localAuth'
     }),
 });
+
+export const bot = new Bot({
+    audio: false,
+});
+
 
 
