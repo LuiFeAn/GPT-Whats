@@ -7,6 +7,9 @@ import WhatsListener from "../listeners/whatsListener.js";
 
 import Bot from '../bot/Bot.js';
 
+import BotError from '../errors/botError.js';
+import { ChatGPTError } from 'chatgpt';
+
 async function Events() {
 
 
@@ -18,7 +21,17 @@ async function Events() {
 
     }catch(err){
 
-        console.log('🤖: Ops ! Algum erro ocorreu. Irei tentar novamente')
+        if( err instanceof ChatGPTError ){
+
+            console.log('🤖: Parece que os servidores do ChatGPT estão sobrecarregados no momento. Tente novamente mais tarde  \n');
+
+            throw new BotError('Servidores do ChatGPT lotados');
+
+        }
+
+        console.log('🤖: Ocorreu um erro durante a minha preparação.\nPor favor, informe o diretório atual do seu chrome na variável de ambiente chamada "CHROME_PATH" \n');
+
+        throw new BotError('Erro durante a inicialização do BOT por não encontrar o diretório do navegador chrome');
 
     }
 
