@@ -1,4 +1,4 @@
-import { whats } from '../providers/index.js';
+import { whats, gpt } from '../providers/index.js';
 
 import path from 'path';
 import fs from 'fs';
@@ -12,15 +12,15 @@ async function Events() {
 
     console.log('🤖: Olá ! Aguarde um pouco enquanto preparo tudo. \n')
 
-    // try{
+    try{
 
-    //     await gpt.initSession();
+        await gpt.initSession();
 
-    // }catch(err){
+    }catch(err){
 
-    //     console.log('🤖: Ops ! Algum erro ocorreu. Irei tentar novamente')
+        console.log('🤖: Ops ! Algum erro ocorreu. Irei tentar novamente')
 
-    // }
+    }
 
 
     Bot.Initialize(function(){

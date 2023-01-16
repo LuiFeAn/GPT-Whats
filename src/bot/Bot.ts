@@ -1,7 +1,7 @@
 import fs from 'fs';
 import read from 'readline';
 
-import { whats } from '../providers/index.js';
+import { whats, gpt } from '../providers/index.js';
 
 import { IBot } from '../interfaces/IBot.js';
 
@@ -32,20 +32,89 @@ class Bot {
 
                 'before-select-option': async function(){
 
-                    const validInitialMessages = ['1','2','3'];
+                    const validInitialMessages = [
+                        '1',
+                        '2',
+                        '3'
+                    ];
 
                     if( !validInitialMessages.includes(message)){
 
                         await whats.sendMessage(phone,'Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
-                        return
+
+                        return;
 
                     }
+
+                    user.state = 'after-select-option';
 
                 },
 
                 'after-select-option': async function(){
 
-                }
+                    const option = user.message as '1' | '2' | '3';
+
+                    const selectedOption = {
+
+                        '1': async function (){
+
+
+                            await whats.sendMessage(phone,'Olá, no que posso ajudar ?');
+
+                            user.state = 'session';
+
+
+                        },
+
+                        '2': async function() {
+
+                            await whats.sendMessage(phone,'Em desenvolvimento !');
+
+                        },
+
+                        '3': function(){
+
+                            whats.sendMessage(phone,`Sessões saõ as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela !`);
+
+                            return;
+
+                        }
+
+                    }
+
+                    selectedOption[option]();
+
+                },
+
+                'session': async function(){
+
+                    await whats.sendMessage(phone,'Digitando...');
+
+
+                    if ( !user.conversationId && !user.messageId ){
+
+                        const { response, messageId, conversationId } = await gpt.sendMessage(message);
+
+                        user.conversationId = conversationId,
+                        user.messageId = messageId;
+
+                        return await whats.sendMessage(phone,response);
+
+                    }
+
+                    const { response, conversationId, messageId } = await gpt.sendMessage(message,{
+                        conversationId: user.conversationId,
+                        parentMessageId: user.messageId
+                    });
+
+                    user.conversationId = conversationId;
+                    user.messageId = messageId;
+
+                    await whats.sendMessage(phone,response);
+
+
+                },
+
 
             }
 
