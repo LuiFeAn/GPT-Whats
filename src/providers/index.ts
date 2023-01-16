@@ -13,7 +13,7 @@ export const gpt = new ChatGPTAPIBrowser({
     email: process.env.CHATGPT_EMAIL as string,
     password: process.env.CHATGPT_PASSWORD as string,
     isGoogleLogin:true,
-    executablePath: process.env.CHROME_PATH ? path.join(process.env.CHROME_PATH) : undefined
+    executablePath: process.env.CHROME_PATH ? path.join(process.env.CHROME_PATH) : undefined,
 });
 
 export const whats = new Whatsapp.Client({
