@@ -46,6 +46,10 @@ CHATGPT_EMAIL= seuemaildochatgpt@gmail.com
 
 CHATGPT_PASSWORD= suasenhadochatgpt123
 
+`Observação:`
+
+Não é necessário atribuir um valor à variável "CHROME_PATH". Só atribuia se você tiver alhgum problema na inicialização do BOT
+
 `Instale todos os pacotes:`
 
 npm install || yarn install
