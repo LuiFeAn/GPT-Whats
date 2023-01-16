@@ -20,8 +20,6 @@ Tecnologias e bibliotecas que utilizei durante este projeto:
 - [DotEnv](https://www.npmjs.com/package/dotenv)
 - [Nodemon](https://www.npmjs.com/package/nodemon)
 - [TsNode](https://www.npmjs.com/package/ts-node)
-- [Fs]
-- [Readline]
 - [EditorConfig](https://editorconfig.org/)
 
 ## Back-End
@@ -34,10 +32,12 @@ Tecnologias e bibliotecas que utilizei durante este projeto:
 
 Este projeto tem por fim ser um BOT pessoal no Whatsapp, cujo qual o usuário pode personalizá-lo e usufruir de suas funcionalidades. Surgiu com base a minha necessidade de otimizar minha rotina, além de me auxiliar como um todo durente o desenvolvimento de minhas aplicações.
 
+Obs: Em desenvolvimento
+
 ## 👨‍💻 Instalação
 ```bash
 # Clone o repositório
-git clone https://github.com/LuiFeAn/My-Contacts-APP
+git clone https://github.com/LuiFeAn/WhatsChatBOT
 
 # Instale todos os pacotes
 npm install || yarn install
