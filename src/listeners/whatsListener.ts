@@ -3,6 +3,8 @@ import WAWebJS, { ClientSession } from 'whatsapp-web.js';
 import fs from 'fs';
 import qrcode from 'qrcode-terminal';
 
+import { whats } from '../providers/index.js';
+
 import UserRepository from '../repos/userRepo.js';
 
 import { bot } from '../providers/index.js';
@@ -22,6 +24,18 @@ class WhatsListener {
     async onMessage( message: WAWebJS.Message, botName: string ){
 
         const { body, id: { remote: phone } } = message;
+
+        const options = bot.getOptions();
+
+        if ( !options.audio ){
+
+            await whats.sendMessage(phone,'*Digitando...*');
+
+        }else{
+
+            await whats.sendMessage(phone,'*Gravando áudio*');
+
+        }
 
         const userExists = UserRepository.find(phone);
 

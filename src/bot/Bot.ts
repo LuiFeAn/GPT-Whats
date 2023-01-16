@@ -6,7 +6,7 @@ import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 
 import { whats, gpt } from '../providers/index.js';
 
-import gTTs from 'gtts';
+// import gTTs from 'gtts';
 
 import * as wtMedia from 'whatsapp-web.js';
 
@@ -53,7 +53,9 @@ class Bot {
 
                 'welcome': async function(){
 
-                    await whats.sendMessage(phone,`Olá , me chamo ${name}. Sou um assistente virtual que faz uso do Chat GPT para responder QUALQUER coisa. \n Primeiramente, me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n *2 - Recuperar uma sessão* \n *3 - O que são sessões ?*`);
+                    await whats.sendMessage(phone,`Olá , me chamo ${name}. Sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas. \*`);
+
+                    await whats.sendMessage(phone,' Primeiramente, me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n *2 - Recuperar uma sessão* \n *3 - O que são sessões ?*')
 
                     user.state = 'before-select-option';
 
@@ -122,8 +124,6 @@ class Bot {
 
                     if ( user.sessions.length === 0 ){
 
-                        await whats.sendMessage(phone,'*Digitando...*');
-
                         session.createSession(user);
 
                         return;
@@ -137,27 +137,13 @@ class Bot {
 
                         const theSession = await session.getSession(user);
 
-                        console.log(theSession)
-
                         if ( botOptions.audio ){
 
-
-                            await whats.sendMessage(phone,'*Gravando áudio*');
-
-                            const gtts = new gTTs(message, 'en');
-
-                            gtts.save('output.mp3', function(error){
-
-                                const media = wtMedia.MessageMedia.fromFilePath('output.mp3');
-                                whats.sendMessage(phone,media);
-
-                            });
-
-                            return;
+                            await whats.sendMessage(phone,'No momento infelizmente ainda não posso enviar mensagens por áudio. Mas fique atento a novas atualizações !');
 
                         }
 
-                        await whats.sendMessage(phone,'*Digitando...*');
+                        await whats.sendMessage(phone,theSession!);
 
 
                     }
@@ -172,6 +158,12 @@ class Bot {
 
         });
 
+
+    }
+
+    getOptions(){
+
+        return this.options;
 
     }
 
