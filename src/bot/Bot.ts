@@ -1,7 +1,14 @@
 import fs from 'fs';
 import read from 'readline';
+import util from 'util';
+
+import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 
 import { whats, gpt } from '../providers/index.js';
+
+import gTTs from 'gtts';
+
+import * as wtMedia from 'whatsapp-web.js';
 
 import session from '../session/index.js';
 
@@ -113,10 +120,9 @@ class Bot {
                 'session': async function(){
 
 
-
-                    await whats.sendMessage(phone,'*Digitando...*');
-
                     if ( user.sessions.length === 0 ){
+
+                        await whats.sendMessage(phone,'*Digitando...*');
 
                         session.createSession(user);
 
@@ -125,9 +131,36 @@ class Bot {
 
                     }
 
-                    commands(user, botOptions);
+                    await commands(user, botOptions);
 
-                    session.getSession(user);
+                    if( !message.includes('/') ){
+
+                        const theSession = await session.getSession(user);
+
+                        console.log(theSession)
+
+                        if ( botOptions.audio ){
+
+
+                            await whats.sendMessage(phone,'*Gravando áudio*');
+
+                            const gtts = new gTTs(message, 'en');
+
+                            gtts.save('output.mp3', function(error){
+
+                                const media = wtMedia.MessageMedia.fromFilePath('output.mp3');
+                                whats.sendMessage(phone,media);
+
+                            });
+
+                            return;
+
+                        }
+
+                        await whats.sendMessage(phone,'*Digitando...*');
+
+
+                    }
 
 
                 },
@@ -146,14 +179,13 @@ class Bot {
 
         const { phone, message } = user;
 
-        const command = message as 'converse comigo por audio' | 'desativar conversa por áudio';
+        const command = message as '/converse comigo por audio' | '/desativar conversa por áudio';
 
         command.toLocaleLowerCase();
 
-
         const verifyCommand = {
 
-            'converse comigo por audio': async function(){
+            '/converse comigo por audio': async function(){
 
                 if( !options.audio ){
 
@@ -169,11 +201,13 @@ class Bot {
 
             },
 
-            'desativar conversa por áudio': async function(){
+            '/desativar conversa por áudio': async function(){
 
                 if ( !options.audio ){
 
                     await whats.sendMessage(phone,'A conversa por áudio já está desativada !');
+
+                    options.audio = false;
 
                     return
 
@@ -185,7 +219,15 @@ class Bot {
 
         }
 
-        await verifyCommand[command]();
+        try {
+
+            await verifyCommand[command]();
+
+        }catch(err){
+
+            return;
+
+        }
 
 
     }

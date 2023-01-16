@@ -34,9 +34,9 @@ class Session {
 
     }
 
-    async getSession( user: IUser ){
+    async getSession( user: IUser ): Promise <string | undefined> {
 
-        const { message, phone } = user;
+        const { message } = user;
 
         const currentUserSession = user.sessions[0];
 
@@ -50,7 +50,7 @@ class Session {
             currentUserSession.messageId = messageId;
             currentUserSession.conversationId = conversationId
 
-            await whats.sendMessage(phone,response);
+            return response;
 
         }
 
