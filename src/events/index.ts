@@ -25,35 +25,28 @@ async function Events() {
 
     Bot.Initialize(function(){
 
-        fs.readFile('botname.txt','utf-8', (err,data) => {
+        const verifySession = fs.existsSync(path.join('./localAuth/auth.key'));
 
-            if( data ){
+        if ( verifySession ){
 
-                const verifySession = fs.existsSync(path.join('./localAuth/auth.key'));
+            console.log('🤖: Opa ! Parece que estou na ativa novamente ! \n');
 
-                if ( verifySession ){
+        }else{
 
-                    console.log('🤖: Opa ! Parece que estou na ativa novamente ! \n');
+            console.log('🤖: Acabo de perceber que ainda não estou vinculado a um Whatsapp ! Então, por favor, utilize o QrCode abaixo para me autenticar: ');
 
-                }else{
+        }
 
-                    console.log('🤖: Acabo de perceber que ainda não estou vinculado a um Whatsapp ! Então, por favor, utilize o QrCode abaixo para me autenticar: ');
+        whats.on('qr',WhatsListener.onQr);
 
-                }
+        whats.on('authenticated',WhatsListener.onAuth);
 
-                whats.on('qr',WhatsListener.onQr);
+        whats.on('ready',WhatsListener.onReady);
 
-                whats.on('authenticated',WhatsListener.onAuth);
+        whats.on('message',WhatsListener.onMessage);
 
-                whats.on('ready',WhatsListener.onReady);
+        whats.initialize();
 
-                whats.on('message', message => WhatsListener.onMessage(message,data.toString()));
-
-                whats.initialize();
-
-            }
-
-        });
 
     });
 
