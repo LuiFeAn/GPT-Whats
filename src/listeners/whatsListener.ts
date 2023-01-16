@@ -3,7 +3,7 @@ import WAWebJS, { ClientSession } from 'whatsapp-web.js';
 import fs from 'fs';
 import qrcode from 'qrcode-terminal';
 
-import UserRepository from '../repos/user-repository.js';
+import UserRepository from '../repos/userRepo.js';
 
 import Bot from '../bot/Bot.js';
 
