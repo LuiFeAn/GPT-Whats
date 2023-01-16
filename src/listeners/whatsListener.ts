@@ -2,9 +2,10 @@ import WAWebJS, { ClientSession } from 'whatsapp-web.js';
 
 import fs from 'fs';
 import qrcode from 'qrcode-terminal';
-import bot from '../bot/index.js';
 
 import UserRepository from '../repos/user-repository.js';
+
+import Bot from '../bot/Bot.js';
 
 class WhatsListener {
 
@@ -41,11 +42,10 @@ class WhatsListener {
 
             user.message = body;
 
-            bot(
+            Bot.states(
                 {
                     options: message,
-                    authUser: user,
-                    botName: botName,
+                    user
                 }
             );
 
