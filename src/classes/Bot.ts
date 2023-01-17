@@ -6,7 +6,7 @@ import session from '../session/index.js';
 
 import { IBot } from '../interfaces/IBot.js';
 
-import User from '../models/User.js';
+import User from './User.js';
 
 import Whatsapp from 'whatsapp-web.js';
 

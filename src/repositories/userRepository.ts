@@ -1,7 +1,7 @@
 import { IUser } from "../interfaces/IUser.js";
 
 import { users } from "../database/index.js";
-import User from "../models/User.js";
+import User from "../classes/User.js";
 
 
 class UserRepository {

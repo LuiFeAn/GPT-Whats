@@ -4,7 +4,7 @@ export interface IBotInstance {
     owner: string
 }
 
-import Bot from "../brain/index.js";
+import Bot from "../classes/Bot.js";
 import { bots } from "../database/index.js";
 
 class BotRepository {

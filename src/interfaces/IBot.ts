@@ -1,5 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import User from "../models/User.js";
+import User from "../classes/User.js";
 
 
 
