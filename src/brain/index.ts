@@ -115,6 +115,8 @@ class Bot {
 
                     whats.sendMessage(phone,'Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
 
+                    return
+
                 }
 
                 if ( user.sessions.length === 0 ){
