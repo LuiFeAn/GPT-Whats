@@ -14,5 +14,6 @@ export interface IUser {
     message: string,
     state: State,
     sessions: GptSessions [],
+    processing: boolean
 
 }
