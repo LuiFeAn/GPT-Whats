@@ -8,31 +8,26 @@ class UserRepository {
 
     register({phone,message,state, sessions, processing}: IUser){
 
-        users.push({
+        const user = new User({
             phone,
             message,
             state,
             processing,
             sessions
-        })
+        });
+
+        users.push(user);
 
     }
 
     find(phone: string){
 
-        const userLiterals = users.find( user => user.phone === phone );
+        const user = users.find( user => user.phone === phone );
 
-        if ( userLiterals ){
-
-            const user = new User( userLiterals );
-
-            return user;
-
-        }
-
-        return
+        return user;
 
     }
+
 
 }
 

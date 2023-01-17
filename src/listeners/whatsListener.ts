@@ -8,6 +8,7 @@ import { whats } from '../providers/index.js';
 import UserRepository from '../repositories/userRepository.js';
 
 import { bot } from '../providers/index.js';
+import userRepository from '../repositories/userRepository.js';
 
 class WhatsListener {
 
@@ -21,25 +22,13 @@ class WhatsListener {
 
     }
 
-    async onMessage( message: WAWebJS.Message, botName: string ){
+    async onMessage( message: WAWebJS.Message ) {
 
-        const { body, id: { remote: phone } } = message;
+        const { body, id: { remote: phone }, ...rest } = message;
 
-        const options = bot.getOptions();
+        const userFirstMessage = UserRepository.find(phone);
 
-        if ( !options.audio ){
-
-            await whats.sendMessage(phone,'*Digitando...*');
-
-        }else{
-
-            await whats.sendMessage(phone,'*Gravando áudio*');
-
-        }
-
-        const userExists = UserRepository.find(phone);
-
-        if ( !userExists ){
+        if ( !userFirstMessage ){
 
             UserRepository.register({
                 phone,
@@ -49,12 +38,23 @@ class WhatsListener {
                 processing:false,
             });
 
-
         }
 
-        const user = UserRepository.find(phone);
+        const user = userRepository.find(phone);
 
         if( user ){
+
+            const options = bot.getOptions();
+
+            if ( !options.audio ){
+
+                await whats.sendMessage(phone,'*Digitando...*');
+
+            }else{
+
+                await whats.sendMessage(phone,'*Gravando áudio*');
+
+            }
 
            user.message = body;
 
