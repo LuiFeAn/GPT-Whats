@@ -4,9 +4,9 @@ import { IUser } from "../interfaces/IUser.js";
 
 class Session {
 
-    async createSession( user: IUser ){
+    async createSession( user: IUser ): Promise<any>{
 
-        const { message, phone } = user;
+        const { message } = user;
 
         const { response, messageId, conversationId } = await gpt.sendMessage(message);
 
@@ -18,11 +18,11 @@ class Session {
             conversationId
         });
 
-        await whats.sendMessage(phone,' *Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ')
+        return {
+            response,
+            sessionId
+        }
 
-        await whats.sendMessage(phone,` *${sessionId.toString()}* `);
-
-        whats.sendMessage(phone,response);
 
     }
 

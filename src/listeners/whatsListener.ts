@@ -46,6 +46,7 @@ class WhatsListener {
                 message: body,
                 state:'welcome',
                 sessions:[],
+                processing:false,
             });
 
 
