@@ -1,6 +1,7 @@
 import { IUser } from "../interfaces/IUser.js";
 
 import { users } from "../database/index.js";
+import User from "../models/User.js";
 
 
 class UserRepository {
@@ -19,9 +20,12 @@ class UserRepository {
 
     find(phone: string){
 
-        const user = users.find( user => user.phone === phone );
+        const userLiterals = users.find( user => user.phone === phone );
 
-        return user;
+        const user = new User(userLiterals!);
+
+        return user
+
     }
 
 }

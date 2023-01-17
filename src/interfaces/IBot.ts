@@ -1,11 +1,11 @@
 import WAWebJS from "whatsapp-web.js";
+import User from "../models/User.js";
 
-import { IUser } from "./IUser.js";
 
 
 export interface IBot  {
 
     options: WAWebJS.Message,
-    user: IUser
+    user: User
 
 }

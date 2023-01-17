@@ -7,7 +7,8 @@ import { whats } from '../providers/index.js';
 import session from '../session/index.js';
 
 import { IBot } from '../interfaces/IBot.js';
-import { IUser } from '../interfaces/IUser.js';
+
+import User from '../models/User.js';
 
 const command = read.createInterface({
     input: process.stdin,
@@ -25,27 +26,24 @@ type BotOptions = {
 class Bot {
 
     private options;
-    private processing;
 
     constructor(options: BotOptions = { audio: false }){
 
         this.options = options;
-        this.processing = false;
 
     }
 
 
     states( { options, user }: IBot ){
 
-        const { message, phone } = user;
 
         this.getName( async ( name: string ) => {
 
             if( user.state === 'welcome'){
 
-                await whats.sendMessage(phone,`Olá , me chamo ${name}. Sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas. \*`);
+                await whats.sendMessage(user.phone,`Olá , me chamo ${name}. Sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas. \*`);
 
-                await whats.sendMessage(phone,' Primeiramente, me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n *2 - Recuperar uma sessão* \n *3 - O que são sessões ?*');
+                await whats.sendMessage(user.phone,' Primeiramente, me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n *2 - Recuperar uma sessão* \n *3 - O que são sessões ?*');
 
                 user.state = 'before-select-option';
 
@@ -57,9 +55,9 @@ class Bot {
 
                 const validInitialMessages = ['1','2','3'];
 
-                if( !validInitialMessages.includes(message) ){
+                if( !validInitialMessages.includes(user.message) ){
 
-                    await whats.sendMessage(phone,'Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
+                    await whats.sendMessage(user.phone,'Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
 
                     return
 
@@ -79,7 +77,7 @@ class Bot {
                     '1': async () => {
 
 
-                        await whats.sendMessage(phone,'Olá, no que posso ajudar ?');
+                        await whats.sendMessage(user.phone,'Olá, no que posso ajudar ?');
 
                         user.state = 'session';
 
@@ -88,7 +86,7 @@ class Bot {
 
                     '2': async () => {
 
-                        await whats.sendMessage(phone,'Em desenvolvimento !');
+                        await whats.sendMessage(user.phone,'Em desenvolvimento !');
 
                         return
 
@@ -96,7 +94,7 @@ class Bot {
 
                     '3': () => {
 
-                        whats.sendMessage(phone,`Sessões saõ as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela !`);
+                        whats.sendMessage(user.phone,`Sessões saõ as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela !`);
 
                         return;
 
@@ -113,7 +111,7 @@ class Bot {
 
                 if( user.processing ){
 
-                    whats.sendMessage(phone,'Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
+                    whats.sendMessage(user.phone,'Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
 
                     return
 
@@ -127,11 +125,11 @@ class Bot {
 
                     user.processing = false;
 
-                    await whats.sendMessage(phone,'*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ')
+                    await whats.sendMessage(user.phone,'*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ')
 
-                    await whats.sendMessage(phone,` *${sessionId.toString()}* `);
+                    await whats.sendMessage(user.phone,` *${sessionId.toString()}* `);
 
-                    whats.sendMessage(phone,response);
+                    whats.sendMessage(user.phone,response);
 
                     return;
 
@@ -140,7 +138,7 @@ class Bot {
 
                 await this.commands(user);
 
-                if( !message.includes('/') ){
+                if( !user.message.includes('/') ){
 
                     user.processing = true;
 
@@ -150,11 +148,11 @@ class Bot {
 
                     if ( this.options.audio ){
 
-                        await whats.sendMessage(phone,'No momento infelizmente ainda não posso enviar mensagens por áudio. Mas fique atento a novas atualizações !');
+                        await whats.sendMessage(user.phone,'No momento infelizmente ainda não posso enviar mensagens por áudio. Mas fique atento a novas atualizações !');
 
                     }
 
-                    await whats.sendMessage(phone,theSession!);
+                    await whats.sendMessage(user.phone,theSession!);
 
 
                 }
@@ -185,11 +183,10 @@ class Bot {
 
     }
 
-    async commands( user: IUser ){
+    async commands( user: User ){
 
-        const { phone, message } = user;
 
-        const command = message as '/converse comigo por audio' | '/desativar conversa por áudio';
+        const command = user.message as '/converse comigo por audio' | '/desativar conversa por áudio';
 
         command.toLocaleLowerCase();
 
@@ -199,7 +196,7 @@ class Bot {
 
                 if( !this.options.audio ){
 
-                    await whats.sendMessage(phone,'Claro ! a partir de agora irei conversar com você por áudio.');
+                    await whats.sendMessage(user.phone,'Claro ! a partir de agora irei conversar com você por áudio.');
 
                     this.options.audio = true;
 
@@ -207,7 +204,7 @@ class Bot {
 
                 }
 
-                await whats.sendMessage(phone,'Já estou conversando por áudio com você !');
+                await whats.sendMessage(user.phone,'Já estou conversando por áudio com você !');
 
             },
 
@@ -215,7 +212,7 @@ class Bot {
 
                 if ( !this.options.audio ){
 
-                    await whats.sendMessage(phone,'A conversa por áudio já está desativada !');
+                    await whats.sendMessage(user.phone,'A conversa por áudio já está desativada !');
 
                     this.options.audio = false;
 
@@ -223,7 +220,7 @@ class Bot {
 
                 }
 
-                await whats.sendMessage(phone,'Conversa por áudio desativada com sucesso !');
+                await whats.sendMessage(user.phone,'Conversa por áudio desativada com sucesso !');
 
             }
 

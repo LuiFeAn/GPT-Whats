@@ -56,7 +56,7 @@ class WhatsListener {
 
         if( user ){
 
-            user.message = body;
+           user.message = body;
 
             bot.states(
                 {
