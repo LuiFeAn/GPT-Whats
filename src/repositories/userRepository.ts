@@ -22,9 +22,15 @@ class UserRepository {
 
         const userLiterals = users.find( user => user.phone === phone );
 
-        const user = new User(userLiterals!);
+        if ( userLiterals ){
 
-        return user
+            const user = new User( userLiterals );
+
+            return user;
+
+        }
+
+        return
 
     }
 
