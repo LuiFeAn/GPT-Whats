@@ -131,7 +131,7 @@ class Bot {
 
                     await whats.sendMessage(phone,` *${sessionId.toString()}* `);
 
-                    options.reply(phone,response);
+                    whats.sendMessage(phone,response);
 
                     return;
 
