@@ -10,6 +10,10 @@ import { IBot } from '../interfaces/IBot.js';
 
 import User from '../models/User.js';
 
+import * as wTTs from 'whatsapp-web.js';
+
+import gtts from 'gtts';
+
 const command = read.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -148,7 +152,19 @@ class Bot {
 
                     if ( this.options.audio ){
 
-                        await whats.sendMessage(user.phone,'No momento infelizmente ainda não posso enviar mensagens por áudio. Mas fique atento a novas atualizações !');
+                        const GTTS = new gtts(theSession,'pt-BR');
+
+                        GTTS.save('output.mp3', async ( err: any, result: any ) => {
+
+                            const media = wTTs.MessageMedia.fromFilePath('output.mp3');
+
+                            await whats.sendMessage(user.phone,media,{
+                                sendAudioAsVoice:true
+                            });
+
+                            return ;
+
+                        })
 
                     }
 

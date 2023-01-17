@@ -58,6 +58,7 @@ class WhatsListener {
 
            user.message = body;
 
+
             bot.states(
                 {
                     options: message,
