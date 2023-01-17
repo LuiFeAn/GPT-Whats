@@ -4,9 +4,6 @@ import Whatsapp from 'whatsapp-web.js';
 import path from 'path';
 import dotenv from 'dotenv';
 
-import Bot from "../brain/index.js";
-
-
 dotenv.config();
 
 export const gpt = new ChatGPTAPIBrowser({
@@ -20,10 +17,6 @@ export const whats = new Whatsapp.Client({
     authStrategy: new Whatsapp.LocalAuth({
         dataPath:'./localAuth'
     }),
-});
-
-export const bot = new Bot({
-    audio: false,
 });
 
 

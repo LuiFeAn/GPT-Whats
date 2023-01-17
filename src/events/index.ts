@@ -1,12 +1,22 @@
-import { whats, gpt, bot } from '../providers/index.js';
+import { whats, gpt } from '../providers/index.js';
 
 import path from 'path';
 import fs from 'fs';
+
+
+import read from 'readline';
+
 
 import WhatsListener from "../listeners/whatsListener.js";
 
 import BotError from '../errors/botError.js';
 import { ChatGPTError } from 'chatgpt';
+
+const command = read.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
 
 async function Events() {
 
@@ -33,34 +43,60 @@ async function Events() {
 
     }
 
+    const verifySession = fs.existsSync(path.join('./localAuth/auth.key'));
 
-    bot.Initialize(function(){
+    if ( verifySession ){
 
-        const verifySession = fs.existsSync(path.join('./localAuth/auth.key'));
+        console.log('🤖: Opa ! Parece que estou na ativa novamente ! \n');
 
-        if ( verifySession ){
+    }else{
 
-            console.log('🤖: Opa ! Parece que estou na ativa novamente ! \n');
+        console.log('🤖: Acabo de perceber que ainda não estou vinculado a um Whatsapp ! Então, por favor, utilize o QrCode abaixo para me autenticar: ');
 
-        }else{
+    }
 
-            console.log('🤖: Acabo de perceber que ainda não estou vinculado a um Whatsapp ! Então, por favor, utilize o QrCode abaixo para me autenticar: ');
+    function reloadThis(){
+
+        const verifyIfBotNameExists = fs.existsSync('botname.txt');
+
+        if ( !verifyIfBotNameExists ){
+
+            command.question('🤖: Pronto ! tudo certo.\nPara começarmos, por favor, me dê um nome ! esse nome será utilizado por mim no Whatsapp. \nQual será meu nome? \n\n', bot => {
+
+                fs.writeFile('botname.txt', bot , async function(error){
+
+                    if(error){
+
+                        console.log('🤖: Algum erro ocorreu durante a minha nomeação. \n Vamos tentar novamente \n');
+
+                        return;
+
+                    }
+
+                    console.log(`🤖: Então eu me chamo ${bot} ! Fantástico ! \n`);
+
+                    return reloadThis();
+
+                });
+
+            });
 
         }
 
-        whats.on('qr',WhatsListener.onQr);
+    }
 
-        whats.on('authenticated',WhatsListener.onAuth);
-
-        whats.on('ready',WhatsListener.onReady);
-
-        whats.on('message',WhatsListener.onMessage);
-
-        whats.initialize();
+    reloadThis();
 
 
-    });
+    whats.on('qr',WhatsListener.onQr);
 
+    whats.on('authenticated',WhatsListener.onAuth);
+
+    whats.on('ready',WhatsListener.onReady);
+
+    whats.on('message',WhatsListener.onMessage);
+
+    whats.initialize();
 
 }
 

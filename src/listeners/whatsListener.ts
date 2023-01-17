@@ -5,10 +5,8 @@ import qrcode from 'qrcode-terminal';
 
 import { whats } from '../providers/index.js';
 
-import UserRepository from '../repositories/userRepository.js';
-
-import { bot } from '../providers/index.js';
 import userRepository from '../repositories/userRepository.js';
+import botRepository from '../repositories/botRepository.js';
 
 class WhatsListener {
 
@@ -26,11 +24,11 @@ class WhatsListener {
 
         const { body, id: { remote: phone }, ...rest } = message;
 
-        const userFirstMessage = UserRepository.find(phone);
+        const userFirstMessage = userRepository.find(phone);
 
         if ( !userFirstMessage ){
 
-            UserRepository.register({
+            userRepository.register({
                 phone,
                 message: body,
                 state:'welcome',
@@ -38,11 +36,19 @@ class WhatsListener {
                 processing:false,
             });
 
+            botRepository.create({
+                owner: phone
+            });
+
+
+
         }
 
         const user = userRepository.find(phone);
+        const bot = botRepository.find(phone);
 
-        if( user ){
+
+        if( user && bot ){
 
             const options = bot.getOptions();
 
