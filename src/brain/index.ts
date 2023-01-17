@@ -10,7 +10,9 @@ import { IBot } from '../interfaces/IBot.js';
 
 import User from '../models/User.js';
 
-import * as wTTs from 'whatsapp-web.js';
+import Whatsapp from 'whatsapp-web.js';
+
+import path from 'path';
 
 import gtts from 'gtts';
 
@@ -154,17 +156,19 @@ class Bot {
 
                         const GTTS = new gtts(theSession,'pt-BR');
 
-                        GTTS.save('output.mp3', async ( err: any, result: any ) => {
+                        const randomFileId = Math.floor(Math.random() * 23433);
 
-                            const media = wTTs.MessageMedia.fromFilePath('output.mp3');
+                        GTTS.save(`output-${randomFileId}.mp3`, async ( err: any, result: any ) => {
+
+                            const media = Whatsapp.MessageMedia.fromFilePath(`output-${randomFileId}.mp3`);
 
                             await whats.sendMessage(user.phone,media,{
                                 sendAudioAsVoice:true
                             });
 
-                            return ;
+                        });
 
-                        })
+                        return;
 
                     }
 

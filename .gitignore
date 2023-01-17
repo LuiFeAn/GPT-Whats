@@ -16,3 +16,7 @@ localAuth
 # Nome do bot
 
 botname.txt
+
+# Arquivos enviados pelo BOT
+
+files
