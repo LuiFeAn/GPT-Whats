@@ -58,7 +58,7 @@ class WhatsListener {
 
             }else{
 
-                await whats.sendMessage(phone,'*Gravando áudio*');
+                await whats.sendMessage(phone,'*Gravando áudio...*');
 
             }
 
