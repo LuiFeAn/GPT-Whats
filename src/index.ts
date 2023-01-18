@@ -8,7 +8,8 @@ import BotError from './errors/botError.js';
 
 import Events from './events/index.js';
 
-( async () => {
+
+async function initialize(){
 
     const command = read.createInterface({
         input: process.stdin,
@@ -26,19 +27,21 @@ import Events from './events/index.js';
 
         if( err instanceof ChatGPTError ){
 
-            console.log('🤖: Parece que os servidores do ChatGPT estão sobrecarregados no momento. Tente novamente mais tarde  \n');
+            console.log('🤖: Parece que os servidores do ChatGPT estão sobrecarregados no momento. Irei tentar novamente');
 
-            throw new BotError('Servidores do ChatGPT lotados');
+            return initialize();
+
 
         }
 
-        console.log('🤖: Ocorreu um erro durante a minha preparação.\nPor favor, informe o diretório atual do seu chrome na variável de ambiente chamada "CHROME_PATH" \n');
+        console.log('🤖: Ocorreu um erro durante a minha preparação.\nPor favor, informe o diretório atual do seu chrome na variável de ambiente chamada "CHROME_PATH"');
 
         throw new BotError('Erro durante a inicialização do BOT por não encontrar o diretório do navegador chrome');
 
     }
 
     function verifyName(){
+
 
         const verifyIfBotNameExists = fs.existsSync('botname.txt');
 
@@ -50,7 +53,7 @@ import Events from './events/index.js';
 
                     if(error){
 
-                        console.log('🤖: Algum erro ocorreu durante a minha nomeação. \n Vamos tentar novamente \n');
+                        console.log('🤖: Algum erro ocorreu durante a minha nomeação. \n Vamos tentar novamente');
 
                         return;
 
@@ -72,7 +75,7 @@ import Events from './events/index.js';
 
             if ( verifySession ){
 
-                console.log('🤖: Opa ! Parece que estou na ativa novamente ! \n');
+                console.log('🤖: Opa ! Parece que estou na ativa novamente !');
 
             }else{
 
@@ -88,7 +91,6 @@ import Events from './events/index.js';
 
     verifyName();
 
+}
 
-})();
-
-
+initialize();

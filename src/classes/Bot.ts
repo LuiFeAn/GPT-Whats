@@ -11,6 +11,7 @@ import Audio from './Audio.js';
 
 import { BotOptions } from '../types/BotOptions.js';
 
+import speech from 'text-to-speech-js';
 
 class Bot {
 

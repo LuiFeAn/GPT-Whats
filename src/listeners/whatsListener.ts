@@ -12,7 +12,9 @@ class WhatsListener {
 
     onAuth( auth: ClientSession ){
 
-        console.log('🤖: Fui autenticado com sucesso ! \n');
+        console.log(auth);
+
+        console.log('🤖: Fui autenticado com sucesso !');
 
         fs.writeFile('./localAuth/auth.key','Autenticado',function(){
 
@@ -64,13 +66,13 @@ class WhatsListener {
 
            user.message = body;
 
-
             bot.states(
                 {
                     options: message,
                     user
                 }
             );
+
 
         }
 
@@ -86,7 +88,7 @@ class WhatsListener {
 
     onReady(){
 
-        console.log('🤖: Estou pronto para uso ! \n');
+        console.log('🤖: Estou pronto para uso !');
 
     }
 

@@ -18,14 +18,12 @@ class Audio {
             GTTS.save(audioName, async ( err: any, result: any ) => {
 
                 if( err) {
-                    reject(err)
+                    return reject(err)
                 }
 
-                const media = Whatsapp.MessageMedia.fromFilePath(`output-${randomFileId}.mp3`);
+                const media = Whatsapp.MessageMedia.fromFilePath(audioName);
 
-                fs.unlink(audioName, ( err ) => null);
-
-                resolve(media);
+                return resolve(media);
 
 
             });

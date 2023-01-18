@@ -16,9 +16,8 @@
     "chatgpt": "^3.4.2",
     "dotenv": "^16.0.3",
     "gtts": "^0.2.1",
-    "node-gtts": "^2.0.2",
     "qrcode-terminal": "^0.12.0",
-    "text-to-speech-file": "^0.3.2",
+    "say": "^0.16.0",
     "whatsapp-web.js": "^1.19.1"
   },
   "devDependencies": {
