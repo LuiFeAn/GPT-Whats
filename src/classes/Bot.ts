@@ -140,13 +140,13 @@ class Bot {
 
                         if( this.options.audio ){
 
-                           Audio.textToSpeech(response, async ( media: Whatsapp.MessageMedia ) => {
+                           const media = await Audio.textToSpeech(response);
 
-                                await whats.sendMessage(user.phone,media,{
+                           await whats.sendMessage(user.phone,media,
+                                {
                                     sendAudioAsVoice:true
-                                });
-
-                           });
+                                }
+                            );
 
                            return;
 
@@ -169,13 +169,13 @@ class Bot {
 
                     if ( this.options.audio ){
 
-                        Audio.textToSpeech(theSession!,async ( media: Whatsapp.MessageMedia ) => {
+                        const media = await Audio.textToSpeech(theSession!);
 
-                            await whats.sendMessage(user.phone,media,{
+                        await whats.sendMessage(user.phone,media,
+                            {
                                 sendAudioAsVoice:true
-                            });
-
-                        })
+                            }
+                        );
 
                         return;
 

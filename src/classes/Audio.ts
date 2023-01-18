@@ -4,19 +4,30 @@ import Whatsapp from 'whatsapp-web.js';
 
 class Audio {
 
-    textToSpeech(text: string,callback:Function){
+    textToSpeech(text: string): Promise<Whatsapp.MessageMedia>{
 
-        const GTTS = new gtts(text,'pt-BR');
 
-        const randomFileId = Math.floor(Math.random() * 23433);
+        return new Promise ( ( reject, resolve ) => {
 
-        GTTS.save(`output-${randomFileId}.mp3`, async ( err: any, result: any ) => {
+            const GTTS = new gtts(text,'pt-BR');
 
-            const media = Whatsapp.MessageMedia.fromFilePath(`output-${randomFileId}.mp3`);
+            const randomFileId = Math.floor(Math.random() * 23433);
 
-            callback(media);
+            GTTS.save(`output-${randomFileId}.mp3`, async ( err: any, result: any ) => {
 
-        });
+                if( err) {
+                    reject(err)
+                }
+
+                const media = Whatsapp.MessageMedia.fromFilePath(`output-${randomFileId}.mp3`);
+
+                resolve(media);
+
+
+            });
+
+
+        })
 
     }
 
