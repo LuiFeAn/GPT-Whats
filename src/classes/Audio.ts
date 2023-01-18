@@ -1,5 +1,5 @@
-
 import gtts from 'gtts';
+import fs from 'fs';
 import Whatsapp from 'whatsapp-web.js';
 
 class Audio {
@@ -13,13 +13,17 @@ class Audio {
 
             const randomFileId = Math.floor(Math.random() * 23433);
 
-            GTTS.save(`output-${randomFileId}.mp3`, async ( err: any, result: any ) => {
+            const audioName = `audio_${randomFileId}.mp3`;
+
+            GTTS.save(audioName, async ( err: any, result: any ) => {
 
                 if( err) {
                     reject(err)
                 }
 
                 const media = Whatsapp.MessageMedia.fromFilePath(`output-${randomFileId}.mp3`);
+
+                fs.unlink(audioName, ( err ) => null);
 
                 resolve(media);
 
