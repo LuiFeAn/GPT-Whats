@@ -23,6 +23,8 @@ class Audio {
 
                 const media = Whatsapp.MessageMedia.fromFilePath(audioName);
 
+                fs.unlink(audioName, err);
+
                 resolve(media);
 
 
