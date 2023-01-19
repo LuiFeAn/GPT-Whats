@@ -1,4 +1,4 @@
-import { State } from "../types/State.js";
+import { State } from "../types/alias/States.js";
 
 import { GptSessions } from "../types/GptSessions.js";
 

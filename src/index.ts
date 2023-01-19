@@ -8,8 +8,7 @@ import BotError from './errors/botError.js';
 
 import Events from './events/index.js';
 
-
-async function initialize(){
+async function init(){
 
     const command = read.createInterface({
         input: process.stdin,
@@ -29,8 +28,7 @@ async function initialize(){
 
             console.log('🤖: Parece que os servidores do ChatGPT estão sobrecarregados no momento. Irei tentar novamente');
 
-            return initialize();
-
+            return init();
 
         }
 
@@ -93,4 +91,4 @@ async function initialize(){
 
 }
 
-initialize();
+init();
