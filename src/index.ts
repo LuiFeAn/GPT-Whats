@@ -8,7 +8,7 @@ import BotError from './errors/botError.js';
 
 import Events from './events/index.js';
 
-( async () => {
+async function init(){
 
     const command = read.createInterface({
         input: process.stdin,
@@ -28,7 +28,7 @@ import Events from './events/index.js';
 
             console.log('🤖: Parece que os servidores do ChatGPT estão sobrecarregados no momento. Tente novamente mais tarde  \n');
 
-            throw new BotError('Servidores do ChatGPT lotados');
+            return init();
 
         }
 
@@ -88,7 +88,6 @@ import Events from './events/index.js';
 
     verifyName();
 
+}
 
-})();
-
-
+init();
