@@ -22,7 +22,7 @@ class BotRepository {
 
     find(owner: string){
 
-        const bot = bots.find( bot => bot.getOptions().owner === owner );
+        const bot = bots.find( bot => bot.options.owner === owner );
 
         return bot;
 

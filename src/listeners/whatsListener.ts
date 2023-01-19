@@ -52,9 +52,8 @@ class WhatsListener {
 
         if( user && bot ){
 
-            const options = bot.getOptions();
 
-            if ( !options.audio ){
+            if ( !bot.options.audio ){
 
                 await whats.sendMessage(phone,'*Digitando...*');
 
