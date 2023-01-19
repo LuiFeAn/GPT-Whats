@@ -1,12 +1,6 @@
 import { State } from "../types/alias/State.js";
 
-type GptSessions = {
-
-    sessionId: number,
-    messageId: string,
-    conversationId: string,
-
-}
+import { GptSessions } from "../types/GptSessions.js";
 
 export interface IUser {
 

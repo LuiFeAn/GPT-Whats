@@ -7,19 +7,9 @@ import session from '../session/index.js';
 import { IBot } from '../interfaces/IBot.js';
 
 import User from './User.js';
-
-import Whatsapp from 'whatsapp-web.js';
-
-import gtts from 'gtts';
 import Audio from './Audio.js';
 
-
-type BotOptions = {
-
-    audio: boolean
-    owner: string | undefined
-
-}
+import { BotOptions } from '../types/BotOptions.js';
 
 
 class Bot {
@@ -138,21 +128,21 @@ class Bot {
 
                         await whats.sendMessage(user.phone,'*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ')
 
+                        if( this.options.audio || !this.options.audio){
+
+                            await whats.sendMessage(user.phone,` *${sessionId.toString()}* `);
+
+                        }
+
                         if( this.options.audio ){
 
                            const media = await Audio.textToSpeech(response);
 
-                           await whats.sendMessage(user.phone,media,
-                                {
-                                    sendAudioAsVoice:true
-                                }
-                            );
+                           await whats.sendMessage(user.phone,media,{sendAudioAsVoice:true});
 
                            return;
 
                         }
-3
-                        await whats.sendMessage(user.phone,` *${sessionId.toString()}* `);
 
                         whats.sendMessage(user.phone,response);
 
@@ -171,11 +161,7 @@ class Bot {
 
                         const media = await Audio.textToSpeech(theSession!);
 
-                        await whats.sendMessage(user.phone,media,
-                            {
-                                sendAudioAsVoice:true
-                            }
-                        );
+                        await whats.sendMessage(user.phone,media,{sendAudioAsVoice:true});
 
                         return;
 
