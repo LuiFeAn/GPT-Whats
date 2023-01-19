@@ -1,4 +1,4 @@
-import { State } from "../types/State.js";
+import { State } from "../types/alias/State.js";
 
 type GptSessions = {
 
