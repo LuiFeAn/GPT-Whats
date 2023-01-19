@@ -5,6 +5,7 @@ import { whats } from '../providers/index.js';
 import session from '../session/index.js';
 
 import { IBot } from '../interfaces/IBot.js';
+import { Options } from '../types/alias/Options.js';
 
 import User from './User.js';
 import Audio from './Audio.js';
@@ -59,7 +60,7 @@ class Bot {
 
             if( user.state === 'after-select-option' ){
 
-                const option = user.message as '1' | '2' | '3' | '4';
+                (user.message as Options)
 
                 const selectedOption = {
 
@@ -94,7 +95,7 @@ class Bot {
 
                 }
 
-                selectedOption[option]();
+                selectedOption[user.message]();
 
             }
 
