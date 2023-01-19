@@ -2,7 +2,7 @@ import fs from 'fs';
 
 import { whats } from '../providers/index.js';
 
-import session from '../session/index.js';
+import session from './Session.js';
 
 import { IBot } from '../interfaces/IBot.js';
 import { Options } from '../types/alias/Options.js';
