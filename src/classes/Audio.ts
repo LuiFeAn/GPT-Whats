@@ -7,7 +7,7 @@ class Audio {
     textToSpeech(text: string): Promise<Whatsapp.MessageMedia>{
 
 
-        return new Promise ( ( reject, resolve ) => {
+        return new Promise ( ( resolve,reject ) => {
 
             const GTTS = new gtts(text,'pt-BR');
 
@@ -18,12 +18,12 @@ class Audio {
             GTTS.save(audioName, async ( err: any, result: any ) => {
 
                 if( err) {
-                    return reject(err)
+                    reject(err)
                 }
 
                 const media = Whatsapp.MessageMedia.fromFilePath(audioName);
 
-                return resolve(media);
+                resolve(media);
 
 
             });
