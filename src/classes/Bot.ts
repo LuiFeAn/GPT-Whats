@@ -14,7 +14,7 @@ import { BotOptions } from '../types/BotOptions.js';
 
 class Bot {
 
-    private options: BotOptions;
+    options: BotOptions;
 
     constructor(options: BotOptions = { audio: false, owner: undefined }){
 
@@ -23,176 +23,171 @@ class Bot {
     }
 
 
-    states( { options, user }: IBot ){
+    async states( { options, user }: IBot ) {
 
+        const name = await this.getName();
 
-        this.getName( async ( name: string ) => {
+        if( user.state === 'welcome' ){
 
-            if( user.state === 'welcome'){
+            await whats.sendMessage(user.phone,`Olá , me chamo ${name}. Sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas. \*`);
 
-                await whats.sendMessage(user.phone,`Olá , me chamo ${name}. Sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas. \*`);
+            await whats.sendMessage(user.phone,' Primeiramente, me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)*');
 
-                await whats.sendMessage(user.phone,' Primeiramente, me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)*');
+            user.state = 'before-select-option';
 
-                user.state = 'before-select-option';
+            return;
 
-                return;
+        }
 
-            }
+        if( user.state === 'before-select-option' ){
 
-            if( user.state === 'before-select-option' ){
+            const validInitialMessages = ['1','2','3','4'];
 
-                const validInitialMessages = ['1','2','3','4'];
+            if( !validInitialMessages.includes(user.message) ){
 
-                if( !validInitialMessages.includes(user.message) ){
+                await whats.sendMessage(user.phone,'Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
 
-                    await whats.sendMessage(user.phone,'Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
-
-                    return
-
-                }
-
-                user.state = 'after-select-option';
-
+                return
 
             }
 
-            if( user.state === 'after-select-option' ){
-
-                (user.message as Options)
-
-                const selectedOption = {
-
-                    '1': async () => {
-
-                        await whats.sendMessage(user.phone,'Olá, no que posso ajudar ?');
-
-                        user.state = 'session';
+            user.state = 'after-select-option';
 
 
-                    },
+        }
 
-                    '2': async () => {
+        if( user.state === 'after-select-option' ){
 
-                        await whats.sendMessage(user.phone,'Em desenvolvimento !');
+            (user.message as Options);
 
-                    },
+            const verifySelectedOption = {
 
-                    '3': async () => {
+                '1': async () => {
 
-                        whats.sendMessage(user.phone,`Sessões saõ as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela !`);
+                    await whats.sendMessage(user.phone,'Olá, no que posso ajudar ?');
 
+                    user.state = 'session';
 
+                },
 
-                    },
+                '2': async () => {
 
-                    '4': async () => {
+                    await whats.sendMessage(user.phone,'Em desenvolvimento !');
 
-                        await whats.sendMessage(user.phone,'Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio*');
+                },
 
-                    }
+                '3': async () => {
+
+                    whats.sendMessage(user.phone,`Sessões saõ as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela !`);
+
+                },
+
+                '4': async () => {
+
+                    await whats.sendMessage(user.phone,'Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio*');
 
                 }
-
-                selectedOption[user.message]();
 
             }
 
-            if( user.state === 'session' ){
-
-                if( user.message.includes('/') ){
-
-                    await this.commands(user);
-
-                }
-
-                if( user.processing ){
-
-                    whats.sendMessage(user.phone,'Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
-
-                    return
-
-                }
+            await verifySelectedOption[user.message]();
 
 
-                if( !user.message.includes('/') ){
+        }
+
+        if( user.state === 'session' ){
+
+            if( user.message.includes('/') ){
+
+                await this.commands(user);
+
+            }
+
+            if( user.processing ){
+
+                whats.sendMessage(user.phone,'Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
+
+                return
+
+            }
 
 
-                    if ( user.sessions.length === 0 ){
-
-                        user.processing = true;
-
-                        const { response, sessionId } = await session.createSession(user);
-
-                        user.processing = false;
-
-                        await whats.sendMessage(user.phone,'*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ')
-
-                        if( this.options.audio || !this.options.audio){
-
-                            await whats.sendMessage(user.phone,` *${sessionId.toString()}* `);
-
-                        }
-
-                        if( this.options.audio ){
-
-                           const media = await Audio.textToSpeech(response);
-
-                           await whats.sendMessage(user.phone,media,{sendAudioAsVoice:true});
-
-                           return;
-
-                        }
-
-                        whats.sendMessage(user.phone,response);
-
-                        return;
+            if( !user.message.includes('/') ){
 
 
-                    }
+                if ( user.sessions.length === 0 ){
 
                     user.processing = true;
 
-                    const theSession = await session.getSession(user);
+                    const { response, sessionId } = await session.createSession(user);
 
                     user.processing = false;
 
-                    if ( this.options.audio ){
+                    await whats.sendMessage(user.phone,'*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ')
 
-                        const media = await Audio.textToSpeech(theSession!);
+                    if( this.options.audio || !this.options.audio){
 
-                        await whats.sendMessage(user.phone,media,{sendAudioAsVoice:true});
-
-                        return;
+                        await whats.sendMessage(user.phone,` *${sessionId.toString()}* `);
 
                     }
 
-                    await whats.sendMessage(user.phone,theSession!);
+                    if( this.options.audio ){
+
+                       const media = await Audio.textToSpeech(response);
+
+                       await whats.sendMessage(user.phone,media,{sendAudioAsVoice:true});
+
+                       return;
+
+                    }
+
+                    whats.sendMessage(user.phone,response);
+
+                    return;
 
 
                 }
+
+                user.processing = true;
+
+                const theSession = await session.getSession(user);
+
+                user.processing = false;
+
+                if ( this.options.audio ){
+
+                    const media = await Audio.textToSpeech(theSession!);
+
+                    await whats.sendMessage(user.phone,media,{sendAudioAsVoice:true});
+
+                    return;
+
+                }
+
+                await whats.sendMessage(user.phone,theSession!);
 
 
             }
 
 
-        });
-
-
+        }
 
     }
 
-    getOptions(){
 
-        return this.options;
+    getName(){
 
-    }
+        return new Promise(( resolve, reject ) => {
 
-    getName(callback: Function){
+            fs.readFile('botname.txt', 'utf-8', async (error,name) => {
 
-        fs.readFile('botname.txt', 'utf-8', async (error,name) => {
+               if( error ) {
+                reject(error)
+               }
 
-            callback(name)
+               resolve(name);
+
+            });
 
         });
 
