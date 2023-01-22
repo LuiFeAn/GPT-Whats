@@ -49,6 +49,7 @@ CHATGPT_PASSWORD= suasenhadochatgpt123
 `Observação:`
 
 1 - Não é necessário atribuir um valor à variável "CHROME_PATH". Só atribuia se você tiver alhgum problema na inicialização do BOT.
+
 2 - É necessário que tu faça login com uma conta que foi cadastrada via Google (gmail) ao chatGpt
 
 `Instale todos os pacotes:`
