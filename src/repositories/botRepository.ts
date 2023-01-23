@@ -1,7 +1,8 @@
+import User from "../classes/User.js";
 
 export interface IBotInstance {
 
-    owner: string
+    owner: User
 }
 
 import Bot from "../classes/Bot.js";
@@ -9,20 +10,19 @@ import { bots } from "../database/index.js";
 
 class BotRepository {
 
-    create({owner}: IBotInstance){
+    create( { owner } : IBotInstance){
 
-        const bot = new Bot({
+        const bot = new Bot(owner,{
             audio:false,
-            owner,
         });
 
         bots.push(bot);
 
     }
 
-    find(owner: string){
+    find(ownerNumber: string){
 
-        const bot = bots.find( bot => bot.options.owner === owner );
+        const bot = bots.find( bot => bot.owner.phone === ownerNumber );
 
         return bot;
 

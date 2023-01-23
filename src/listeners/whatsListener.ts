@@ -30,7 +30,7 @@ class WhatsListener {
 
         if ( !userFirstMessage ){
 
-            userRepository.register({
+            const user = userRepository.register({
                 phone,
                 message: body,
                 state:'welcome',
@@ -39,7 +39,7 @@ class WhatsListener {
             });
 
             botRepository.create({
-                owner: phone
+                owner: user
             });
 
 
@@ -65,12 +65,7 @@ class WhatsListener {
 
            user.message = body;
 
-            bot.states(
-                {
-                    options: message,
-                    user
-                }
-            );
+           bot.states();
 
 
         }

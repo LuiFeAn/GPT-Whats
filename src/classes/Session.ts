@@ -1,10 +1,9 @@
-import { whats, gpt } from "../providers/index.js";
-
-import { IUser } from "../interfaces/IUser.js";
+import { gpt } from "../providers/index.js";
+import User from "./User.js";
 
 class Session {
 
-    async createSession( user: IUser ): Promise<any>{
+    async createSession( user: User ): Promise<any>{
 
         const { message } = user;
 
@@ -34,7 +33,7 @@ class Session {
 
     }
 
-    async getSession( user: IUser ): Promise <string | undefined> {
+    async getSession( user: User ): Promise <string | undefined> {
 
         const { message } = user;
 
