@@ -93,38 +93,26 @@ class Bot {
 
             }
 
-            await verifySelectedOption[this.owner.message]();
+            return await verifySelectedOption[this.owner.message]();
 
 
         }
 
         if( this.owner.state === 'session' ){
 
-            if( this.owner.message.includes('/') ){
 
-                await this.commands(this.owner.message);
+            await this.verifyCommand();
 
-            }
+            await this.verifyProcessing();
 
-            if( this.owner.processing ){
-
-                await this.say('Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
-
-                return
-
-            }
-
+            let botResponse: any;
 
             if( !this.owner.message.includes('/') ){
 
 
                 if ( this.owner.sessions.length === 0 ){
 
-                    this.owner.processing = true;
-
                     const { response, sessionId } = await session.createSession(this.owner);
-
-                    this.owner.processing = false;
 
                     await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
 
@@ -134,46 +122,34 @@ class Bot {
 
                     }
 
-                    if( this.options.audio ){
-
-                       const media = await Audio.textToSpeech(response);
-
-                       await this.say(media,{
-                            hasAudio: true
-                       })
-
-                       return;
-
-                    }
-
-                    await this.say(response);
+                    botResponse = response;
 
                     return;
 
 
                 }
 
-                this.owner.processing = true;
+                botResponse = await session.getSession(this.owner);
 
-                const theSession = await session.getSession(this.owner);
+                if( this.options.audio ){
 
-                this.owner.processing = false;
-
-                if ( this.options.audio ){
-
-                    const media = await Audio.textToSpeech(theSession!);
+                    const media = await Audio.textToSpeech(botResponse);
 
                     await this.say(media,{
                         hasAudio: true
-                    });
+                    })
 
                     return;
 
                 }
 
-                await this.say(theSession!);
+                await this.say(botResponse);
+
+                return
+
 
             }
+
 
 
         }
@@ -199,11 +175,44 @@ class Bot {
 
     }
 
-    say(message: string | Whatsapp.MessageMedia, options = { hasAudio: false }){
+    async verifyCommand(){
 
-        return whats.sendMessage(this.owner.phone,message,{
-            sendAudioAsVoice: options.hasAudio
-        });
+        if( this.owner.message[0] === '/' ){
+
+            await this.commands(this.owner.message);
+
+        }
+
+    }
+
+    async verifyProcessing(){
+
+        if( this.owner.processing ){
+
+            await this.say('Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
+
+            return
+
+        }
+
+
+    }
+
+    async say(message: string | Whatsapp.MessageMedia, options = { hasAudio: false }){
+
+        try{
+
+            await whats.sendMessage(this.owner.phone,message,{
+                sendAudioAsVoice: options.hasAudio
+            });
+
+        }catch(error){
+
+            await whats.sendMessage(this.owner.phone,'No momento não foi possível responder a sua mengagem, Por favor, tente novamente mais tarde');
+
+            return this.states();
+
+        }
 
     }
 
