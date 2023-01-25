@@ -18,6 +18,8 @@ class UserRepository {
 
         users.push(user);
 
+        return user;
+
     }
 
     find(phone: string){

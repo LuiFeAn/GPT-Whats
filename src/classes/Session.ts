@@ -1,14 +1,17 @@
-import { whats, gpt } from "../providers/index.js";
-
-import { IUser } from "../interfaces/IUser.js";
+import { gpt } from "../providers/index.js";
+import User from "./User.js";
 
 class Session {
 
-    async createSession( user: IUser ): Promise<any>{
+    async createSession( user: User ): Promise<any>{
 
         const { message } = user;
 
+        user.processing = true;
+
         const { response, messageId, conversationId } = await gpt.sendMessage(message);
+
+        user.processing = false;
 
         const sessionId = this.createSessionId();
 
@@ -26,7 +29,7 @@ class Session {
 
     }
 
-    createSessionId(){
+    private createSessionId(){
 
         const sessionId = Math.floor( Math.random () * 1323234);
 
@@ -34,7 +37,7 @@ class Session {
 
     }
 
-    async getSession( user: IUser ): Promise <string | undefined> {
+    async getSession( user: User ): Promise <string | undefined> {
 
         const { message } = user;
 
@@ -42,10 +45,14 @@ class Session {
 
         if ( currentUserSession ){
 
+            user.processing = true;
+
             const { response, messageId, conversationId } = await gpt.sendMessage(message,{
                 conversationId: currentUserSession.conversationId,
                 parentMessageId: currentUserSession.messageId
             });
+
+            user.processing = false;
 
             currentUserSession.messageId = messageId;
             currentUserSession.conversationId = conversationId
