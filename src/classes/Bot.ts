@@ -1,16 +1,12 @@
 import fs from 'fs';
 
 import { whats } from '../providers/index.js';
-
-import session from './Session.js';
-
 import { Options } from '../types/alias/Options.js';
+import { BotOptions } from '../types/BotOptions.js';
 
 import User from './User.js';
 import Audio from './Audio.js';
-
-import { BotOptions } from '../types/BotOptions.js';
-import Whatsapp from 'whatsapp-web.js';
+import session from './Session.js';
 
 class Bot {
 
@@ -116,36 +112,27 @@ class Bot {
 
                     await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
 
-                    if( this.options.audio || !this.options.audio){
-
-                        await this.say(`*${sessionId.toString()}*`);
-
-                    }
+                    await this.say(`*${sessionId.toString()}*`);
 
                     botResponse = response;
 
-                    return;
+                    this.say(botResponse);
+
+                    return
+
+                }
+
+                if( this.owner.sessions.length > 0 ){
+
+                    botResponse = await session.getSession(this.owner);
+
+                    this.say(botResponse);
+
+                    return
 
 
                 }
 
-                botResponse = await session.getSession(this.owner);
-
-                if( this.options.audio ){
-
-                    const media = await Audio.textToSpeech(botResponse);
-
-                    await this.say(media,{
-                        hasAudio: true
-                    })
-
-                    return;
-
-                }
-
-                await this.say(botResponse);
-
-                return
 
 
             }
@@ -198,13 +185,28 @@ class Bot {
 
     }
 
-    async say(message: string | Whatsapp.MessageMedia, options = { hasAudio: false }){
+    async say(message: string){
 
         try{
 
-            await whats.sendMessage(this.owner.phone,message,{
-                sendAudioAsVoice: options.hasAudio
-            });
+            if( this.options.audio ){
+
+                this.say('Gravando audio...*');
+
+                const media = await Audio.textToSpeech(message);
+
+                await whats.sendMessage(this.owner.phone,media,{
+                    sendAudioAsVoice: true
+                });
+
+                return;
+
+            }
+
+            this.say('*Digitando...*');
+
+            await whats.sendMessage(this.owner.phone,message);
+
 
         }catch(error){
 
@@ -245,7 +247,7 @@ class Bot {
 
                 if ( this.options.audio ){
 
-                    await this.say('A conversa por áudio já está desativada !');
+                    await this.say('Conversa por áudio desativada com sucesso !');
 
                     this.options.audio = false;
 
@@ -253,9 +255,11 @@ class Bot {
 
                 }
 
-                await this.say('Conversa por áudio desativada com sucesso !');
+                await this.say('A conversa por áudio já está desativada !');
 
-            }
+
+            },
+
 
         }
 

@@ -1,6 +1,10 @@
 import gtts from 'gtts';
 import fs from 'fs';
 import Whatsapp from 'whatsapp-web.js';
+import path from 'path';
+
+
+import { Leopard} from '@picovoice/leopard-node';
 
 class Audio {
 
@@ -32,6 +36,35 @@ class Audio {
 
 
         })
+
+    }
+
+    async speechToText(media: Whatsapp.MessageMedia): Promise<string>{
+
+
+        return new Promise(( resolve, reject ) => {
+
+            const savedFilePath = __dirname;
+
+            fs.writeFile(savedFilePath, JSON.stringify(media.data), function (err) {
+
+                if( err ){
+
+                    reject(err);
+
+                }
+
+                const client = new Leopard(process.env.PICOVOICE_KEY as string);
+
+                const result = client.processFile(savedFilePath);
+
+                resolve(result.transcript);
+
+
+            });
+
+
+        });
 
     }
 

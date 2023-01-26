@@ -11,14 +11,17 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google-cloud/speech": "^5.2.0",
     "@google-cloud/text-to-speech": "^4.1.0",
+    "@picovoice/leopard-node": "^1.1.1",
     "@types/qrcode-terminal": "^0.12.0",
-    "chatgpt": "^3.4.2",
+    "chatgpt": "^3.5.1",
     "dotenv": "^16.0.3",
     "gtts": "^0.2.1",
     "qrcode-terminal": "^0.12.0",
     "say": "^0.16.0",
-    "whatsapp-web.js": "^1.19.1"
+    "whatsapp-web.js": "^1.19.1",
+    "ytdl-core": "^4.11.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.20",

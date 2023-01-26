@@ -1,13 +1,15 @@
 import { IUser } from "../interfaces/IUser.js";
+import { GptSessions } from "../types/GptSessions.js";
+import { State } from "../types/alias/States.js";
 
 
 class User {
 
-    phone;
-    message;
-    state;
-    sessions;
-    processing;
+    phone: string;
+    message: string;
+    state: State;
+    sessions: GptSessions [];
+    processing: boolean;
 
     constructor( { phone, message, state, sessions, processing}: IUser ){
 
