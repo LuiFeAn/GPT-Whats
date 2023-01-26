@@ -243,7 +243,7 @@ class Bot {
 
                 if ( this.options.audio ){
 
-                    await this.say('A conversa por áudio já está desativada !');
+                    await this.say('Conversa por áudio desativada com sucesso !');
 
                     this.options.audio = false;
 
@@ -251,7 +251,8 @@ class Bot {
 
                 }
 
-                await this.say('Conversa por áudio desativada com sucesso !');
+                await this.say('A conversa por áudio já está desativada !');
+
 
             }
 
