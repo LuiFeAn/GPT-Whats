@@ -8,11 +8,11 @@ import { whats } from '../providers/index.js';
 import userRepository from '../repositories/userRepository.js';
 import botRepository from '../repositories/botRepository.js';
 
+import Audio from '../classes/Audio.js';
+
 class WhatsListener {
 
     onAuth( auth: ClientSession ){
-
-        console.log(auth);
 
         console.log('🤖: Fui autenticado com sucesso !');
 
@@ -24,7 +24,7 @@ class WhatsListener {
 
     async onMessage( message: WAWebJS.Message ) {
 
-        const { body, id: { remote: phone }, ...rest } = message;
+        let { body, id: { remote: phone }, hasMedia, mediaKey, ...rest } = message;
 
         const userFirstMessage = userRepository.find(phone);
 
@@ -49,26 +49,33 @@ class WhatsListener {
         const user = userRepository.find(phone);
         const bot = botRepository.find(phone);
 
+        // if( hasMedia ){
 
-        if( user && bot ){
+        //     try{
 
+        //         const media = await message.downloadMedia();
 
-            if ( !bot.options.audio ){
+        //         const text = await Audio.speechToText(media);
 
-                await whats.sendMessage(phone,'*Digitando...*');
+        //         body = text;
 
-            }else{
+        //     }catch(err){
 
-                await whats.sendMessage(phone,'*Gravando áudio...*');
+        //         await bot!.say('Não foi possível compreender seu audio! Tente novamente mais tarde');
 
-            }
+        //         return;
 
-           user.message = body;
+        //     }
 
-           bot.states();
+        // }
 
+       if( bot && user ){
+
+            user.message = body;
+            bot.states();
 
         }
+
 
     }
 
