@@ -191,6 +191,8 @@ class Bot {
 
             if( this.options.audio ){
 
+                this.say('Gravando audio...*');
+
                 const media = await Audio.textToSpeech(message);
 
                 await whats.sendMessage(this.owner.phone,media,{
@@ -200,6 +202,8 @@ class Bot {
                 return;
 
             }
+
+            this.say('*Digitando...*');
 
             await whats.sendMessage(this.owner.phone,message);
 
@@ -254,7 +258,8 @@ class Bot {
                 await this.say('A conversa por áudio já está desativada !');
 
 
-            }
+            },
+
 
         }
 
