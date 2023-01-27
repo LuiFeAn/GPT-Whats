@@ -3,12 +3,8 @@ import WAWebJS, { ClientSession } from 'whatsapp-web.js';
 import fs from 'fs';
 import qrcode from 'qrcode-terminal';
 
-import { whats } from '../providers/index.js';
-
 import userRepository from '../repositories/userRepository.js';
-import botRepository from '../repositories/botRepository.js';
-
-import Audio from '../classes/Audio.js';
+import botRepository from '../repositories/botRepository.js';;
 
 class WhatsListener {
 
@@ -49,25 +45,13 @@ class WhatsListener {
         const user = userRepository.find(phone);
         const bot = botRepository.find(phone);
 
-        // if( hasMedia ){
+        if( hasMedia ){
 
-        //     try{
+            await bot!.say('Infelizmente não consigo reconhecer mensagens multimídia. Por favor, envie apenas textos ! 😁');
 
-        //         const media = await message.downloadMedia();
+            return;
 
-        //         const text = await Audio.speechToText(media);
-
-        //         body = text;
-
-        //     }catch(err){
-
-        //         await bot!.say('Não foi possível compreender seu audio! Tente novamente mais tarde');
-
-        //         return;
-
-        //     }
-
-        // }
+        }
 
        if( bot && user ){
 

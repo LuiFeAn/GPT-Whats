@@ -16,7 +16,7 @@ async function init(){
     });
 
 
-    console.log('🤖: Olá ! Aguarde um pouco enquanto preparo tudo. \n')
+    console.log('🤖: Olá ! Aguarde um pouco enquanto preparo tudo.')
 
     try{
 
@@ -57,7 +57,7 @@ async function init(){
 
                     }
 
-                    console.log(`🤖: Então eu me chamo ${bot} ! Fantástico ! \n`);
+                    console.log(`🤖: Então eu me chamo ${bot} ! Fantástico !`);
 
                     return verifyName();
 

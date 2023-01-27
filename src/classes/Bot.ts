@@ -11,7 +11,7 @@ import session from './Session.js';
 class Bot {
 
     owner: User
-    options: BotOptions;
+    private options: BotOptions;
 
     constructor(owner: User ,options: BotOptions = { audio: false }){
 
@@ -96,10 +96,27 @@ class Bot {
 
         if( this.owner.state === 'session' ){
 
+            if( !this.options.audio ){
 
-            await this.verifyCommand();
+                await this.say('*Digitando...*');
+                
+            }
 
-            await this.verifyProcessing();
+            if( this.owner.processing ){
+
+                await this.say('Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
+    
+                return 
+    
+            }
+
+            if( this.owner.message[0] === '/' ){
+
+                await this.commands(this.owner.message);
+
+                return;
+    
+            }
 
             let botResponse: any;
 
@@ -162,36 +179,12 @@ class Bot {
 
     }
 
-    async verifyCommand(){
-
-        if( this.owner.message[0] === '/' ){
-
-            await this.commands(this.owner.message);
-
-        }
-
-    }
-
-    async verifyProcessing(){
-
-        if( this.owner.processing ){
-
-            await this.say('Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
-
-            return
-
-        }
-
-
-    }
 
     async say(message: string){
 
         try{
 
             if( this.options.audio ){
-
-                this.say('Gravando audio...*');
 
                 const media = await Audio.textToSpeech(message);
 
@@ -202,8 +195,6 @@ class Bot {
                 return;
 
             }
-
-            this.say('*Digitando...*');
 
             await whats.sendMessage(this.owner.phone,message);
 
