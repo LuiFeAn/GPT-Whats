@@ -1,4 +1,3 @@
-import fs from 'fs';
 
 import { whats } from '../providers/index.js';
 import { Options } from '../types/alias/Options.js';
@@ -11,11 +10,12 @@ import session from './Session.js';
 class Bot {
 
     owner: User
+    botName!: string
     private options: BotOptions;
 
-    constructor(owner: User ,options: BotOptions = { audio: false }){
+    constructor(owner: User, options: BotOptions = { audio: false }){
 
-        this.owner = owner
+        this.owner = owner;
         this.options = options;
 
 
@@ -24,19 +24,35 @@ class Bot {
 
     async states() {
 
-        const name = await this.getName();
-
         if( this.owner.state === 'welcome' ){
 
-            this.say(`Olá , me chamo ${name}. Sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas. \*`);
+            await this.say('Primeiramente, por favor, me dê um nome');
 
-            this.say("Primeiramente, me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)*");
+            await this.say('Qual nome você gostaria de me dar ?');
+
+            this.owner.state = 'choice-bot-name';
+
+            return
+
+        }
+
+        if( this.owner.state === 'choice-bot-name' ){
+
+            this.botName = this.owner.message;
+
+            await this.say(`Ótimo ! me chamo ${this.botName}. Obrigado por me nomear`);
+
+            await this.say('Primeiramente, gostaria de informar que sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas.');
+
+            this.say("Me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)*");
 
             this.owner.state = 'before-select-option';
 
-            return;
+            return
+
 
         }
+
 
         if( this.owner.state === 'before-select-option' ){
 
@@ -99,15 +115,15 @@ class Bot {
             if( !this.options.audio ){
 
                 await this.say('*Digitando...*');
-                
+
             }
 
             if( this.owner.processing ){
 
                 await this.say('Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
-    
-                return 
-    
+
+                return
+
             }
 
             if( this.owner.message[0] === '/' ){
@@ -115,7 +131,7 @@ class Bot {
                 await this.commands(this.owner.message);
 
                 return;
-    
+
             }
 
             let botResponse: any;
@@ -157,25 +173,6 @@ class Bot {
 
 
         }
-
-    }
-
-
-    getName(){
-
-        return new Promise(( resolve, reject ) => {
-
-            fs.readFile('botname.txt', 'utf-8', async (error,name) => {
-
-               if( error ) {
-                reject(error)
-               }
-
-               resolve(name);
-
-            });
-
-        });
 
     }
 
