@@ -5,7 +5,7 @@ import { State } from "../types/alias/States.js";
 
 class User {
 
-    phone: string;
+    readonly phone: string;
     message: string;
     state: State;
     sessions: GptSessions [];
