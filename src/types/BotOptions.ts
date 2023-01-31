@@ -1,5 +1,6 @@
 export type BotOptions = {
 
-    audio: boolean
+    audio?: boolean,
+    language?: string,
 
 }
