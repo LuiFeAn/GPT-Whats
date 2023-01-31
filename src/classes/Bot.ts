@@ -13,7 +13,7 @@ class Bot {
     owner: User
     private options: BotOptions;
 
-    constructor(owner: User ,options: BotOptions = { audio: false }){
+    constructor(owner: User ,options: BotOptions = { audio: false, language: 'pt-br' }){
 
         this.owner = owner
         this.options = options;
@@ -155,6 +155,26 @@ class Bot {
             }
 
 
+        }
+
+        if( this.owner.state === 'lenguage-choice' ){
+
+
+            const validLenguages = ['pt-br','en-us'];
+
+            if( !validLenguages.includes(this.owner.message) ){
+
+                this.say('A linguagem selecionada é inválida !');
+
+                return;
+
+            }
+
+            await this.say(`Ótimo ! a partir irei responder você em ${this.owner.message}`)
+
+            this.options.language = this.owner.message;
+
+            this.owner.state = 'session';
 
         }
 
@@ -186,7 +206,7 @@ class Bot {
 
             if( this.options.audio ){
 
-                const media = await Audio.textToSpeech(message);
+                const media = await Audio.textToSpeech(message,this.options.language!);
 
                 await whats.sendMessage(this.owner.phone,media,{
                     sendAudioAsVoice: true
@@ -222,7 +242,13 @@ class Bot {
 
                 if( !this.options.audio ){
 
-                   await this.say('Claro ! a partir de agora irei conversar com você por áudio.')
+                    await this.say('Claro ! a partir de agora irei conversar com você por áudio.');
+
+                    await this.say('Primeiramente, em qual idioma você gostaria que eu o respondesse ?');
+
+                    await this.say('Lista de idiomas: \n *pt-Br \n en-US*');
+
+                    this.owner.state = 'lenguage-choice';
 
                     this.options.audio = true;
 
@@ -250,6 +276,7 @@ class Bot {
 
 
             },
+
 
 
         }
