@@ -210,6 +210,10 @@ class Bot {
 
             await this.say('Esta funcionalidade está em desenvolvimento');
 
+            this.owner.state = 'session';
+
+            return;
+
 
         }
 
