@@ -38,7 +38,7 @@ Obs: Em desenvolvimento
 
 `Clone o repositório:`
 
-git clone https://github.com/LuiFeAn/WhatsChatBOT
+git clone https://github.com/LuiFeAn/GPTWhats
 
 `Crie um arquivo .env com as seguintes informações e insira seu login do ChatGPT:`
 
