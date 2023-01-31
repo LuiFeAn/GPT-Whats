@@ -12,9 +12,7 @@ class BotRepository {
 
     create( { owner } : IBotInstance){
 
-        const bot = new Bot(owner,{
-            audio:false,
-        });
+        const bot = new Bot(owner);
 
         bots.push(bot);
 
