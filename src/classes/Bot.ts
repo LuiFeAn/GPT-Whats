@@ -196,7 +196,7 @@ class Bot {
 
             }
 
-            await this.say(`Ótimo ! a partir irei de agora irei responder você em ${this.owner.message}`)
+            await this.say(`Ótimo ! irei responder você em ${this.owner.message}`)
 
             this.options.language = this.owner.message;
 
@@ -263,11 +263,11 @@ class Bot {
 
                 if( !this.options.audio ){
 
-                    await this.say('Claro ! a partir de agora irei conversar com você por áudio');
+                    await this.say('Claro ! a partir de agora irei conversar com você por áudio 😜');
 
-                    await this.say('Primeiramente, em qual idioma você gostaria que eu adaptase meu sotaque ? \n É interessante que você escolha meu sotaque, pois você poderá treinar a escuta de um determinado idoma através das minhas respostas');
+                    await this.say('Primeiramente, em qual idioma você gostaria que eu adaptase meu sotaque ? \nÉ interessante que você escolha meu sotaque, pois você poderá treinar a escuta de um determinado idoma através das minhas respostas 😁');
 
-                    await this.say('Lista de idiomas: \n *PT-BR* \n *EN-US*');
+                    await this.say('Lista de idiomas:\n*PT-BR* \n *EN-US*');
 
                     this.owner.state = 'lenguage-choice';
 
