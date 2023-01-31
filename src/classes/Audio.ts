@@ -4,12 +4,12 @@ import Whatsapp from 'whatsapp-web.js';
 
 class Audio {
 
-    textToSpeech(text: string): Promise<Whatsapp.MessageMedia>{
+    textToSpeech(text: string, lenguage: string): Promise<Whatsapp.MessageMedia>{
 
 
         return new Promise ( ( resolve,reject ) => {
 
-            const GTTS = new gtts(text,'pt-BR');
+            const GTTS = new gtts(text,lenguage);
 
             const randomFileId = Math.floor(Math.random() * 23433);
 
