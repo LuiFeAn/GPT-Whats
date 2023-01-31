@@ -23,6 +23,7 @@ Tecnologias e bibliotecas que utilizei durante este projeto:
 - [EditorConfig](https://editorconfig.org/)
 - [TypeOrm](https://typeorm.io/)
 - [PgSql](https://www.npmjs.com/package/pg)
+- [Docker](https://www.docker.com/)
 
 ## Back-End
 - SOLID
