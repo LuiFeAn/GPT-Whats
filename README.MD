@@ -21,12 +21,14 @@ Tecnologias e bibliotecas que utilizei durante este projeto:
 - [Nodemon](https://www.npmjs.com/package/nodemon)
 - [TsNode](https://www.npmjs.com/package/ts-node)
 - [EditorConfig](https://editorconfig.org/)
+- [TypeOrm](https://typeorm.io/)
+- [PgSql](https://www.npmjs.com/package/pg)
 
 ## Back-End
 - SOLID
 - Funções Reutilizáveis
 - Clean Code
-- Design Patterns ( Repository Pattern, Early Return, Singleton )
+- Design Patterns ( Repository Pattern, Early Return, Singleton Pattern, Service Pattern )
 
 ## 💻 Projeto
 
@@ -51,6 +53,8 @@ CHATGPT_PASSWORD= suasenhadochatgpt123
 1 - Não é necessário atribuir um valor à variável "CHROME_PATH". Só atribuia se você tiver alhgum problema na inicialização do BOT.
 
 2 - É necessário que tu faça login com uma conta que foi cadastrada via Google na openIA para evitar problemas na inicialização.
+
+3 - A conexão com o banco de dados só é necessária se você quiser armazenar os IDS e outras informações em um local mais sólido. Do contrário, não é necessário preencher as variáveis de ambiente referentes ao banco de dados.
 
 `Instale todos os pacotes:`
 
