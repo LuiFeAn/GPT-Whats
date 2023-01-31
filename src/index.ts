@@ -1,9 +1,13 @@
+import "reflect-metadata";
+
 import path from 'path';
 import fs from 'fs';
 
 import { gpt } from './providers/index.js';
 import { ChatGPTError } from 'chatgpt';
 import BotError from './errors/botError.js';
+
+import './database/dbConfig.js';
 
 import Events from './events/index.js';
 
