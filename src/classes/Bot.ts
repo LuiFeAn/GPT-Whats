@@ -6,7 +6,7 @@ import { BotOptions } from '../types/BotOptions.js';
 import User from './User.js';
 import Audio from './Audio.js';
 import session from './Session.js';
-import sessionService from '../services/sessionService.js';
+
 import configs from '../configs/index.js';
 
 class Bot {
@@ -103,7 +103,7 @@ class Bot {
 
                 '3': async () => {
 
-                    await this.say(`Sessões saõ as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela !`);
+                    await this.say(`Sessões são as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela !`);
 
                 },
 
@@ -188,7 +188,7 @@ class Bot {
 
             const validLenguages = ['pt-br','en-us'];
 
-            if( !validLenguages.includes(this.owner.message) ){
+            if( !validLenguages.includes(this.owner.message.toLowerCase()) ){
 
                 this.say('A linguagem selecionada é inválida !');
 
@@ -196,7 +196,7 @@ class Bot {
 
             }
 
-            await this.say(`Ótimo ! a partir irei responder você em ${this.owner.message}`)
+            await this.say(`Ótimo ! a partir irei de agora irei responder você em ${this.owner.message}`)
 
             this.options.language = this.owner.message;
 
@@ -207,6 +207,9 @@ class Bot {
         if( this.owner.state === 'find-session' ){
 
             // const session = await sessionService.findSession(this.owner.message);
+
+            await this.say('Esta funcionalidade está em desenvolvimento');
+
 
         }
 
@@ -256,11 +259,11 @@ class Bot {
 
                 if( !this.options.audio ){
 
-                    await this.say('Claro ! a partir de agora irei conversar com você por áudio.');
+                    await this.say('Claro ! a partir de agora irei conversar com você por áudio');
 
-                    await this.say('Primeiramente, em qual idioma você gostaria que eu o respondesse ?');
+                    await this.say('Primeiramente, em qual idioma você gostaria que eu adaptase meu sotaque ? \n É interessante que você escolha meu sotaque, pois você poderá treinar a escuta de um determinado idoma através das minhas respostas');
 
-                    await this.say('Lista de idiomas: \n *pt-Br \n en-US*');
+                    await this.say('Lista de idiomas: \n *PT-BR* \n *EN-US*');
 
                     this.owner.state = 'lenguage-choice';
 
