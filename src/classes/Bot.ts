@@ -6,6 +6,8 @@ import { BotOptions } from '../types/BotOptions.js';
 import User from './User.js';
 import Audio from './Audio.js';
 import session from './Session.js';
+import sessionService from '../services/sessionService.js';
+import configs from '../configs/index.js';
 
 class Bot {
 
@@ -87,7 +89,15 @@ class Bot {
 
                 '2': async () => {
 
-                   await this.say('Em desenvolvimento !');
+                   if( !configs.connectionWithDb ){
+
+                        await this.say('Não estou conectado a um banco de dados propriamente dito no momento. Tente novamente mais tarde !');
+
+                        return;
+
+                   }
+
+                   this.owner.state = 'find-session';
 
                 },
 
@@ -193,6 +203,13 @@ class Bot {
             this.owner.state = 'session';
 
         }
+
+        if( this.owner.state === 'find-session' ){
+
+            // const session = await sessionService.findSession(this.owner.message);
+
+        }
+
 
     }
 
