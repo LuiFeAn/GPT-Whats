@@ -28,9 +28,9 @@ class Bot {
 
         if( this.owner.state === 'welcome' ){
 
-            await this.say('Primeiramente, por favor, me dê um nome');
+            await this.say('Primeiramente, por favor, me dê um nome 😎');
 
-            await this.say('Qual nome você gostaria de me dar ?');
+            await this.say('Qual nome você gostaria de me dar ? 👀');
 
             this.owner.state = 'choice-bot-name';
 
@@ -42,7 +42,7 @@ class Bot {
 
             this.botName = this.owner.message;
 
-            await this.say(`Ótimo ! me chamo ${this.botName}. Obrigado por me nomear`);
+            await this.say(`Ótimo ! me chamo ${this.botName}. Obrigado por me nomear ❤`);
 
             await this.say('Primeiramente, gostaria de informar que sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas.');
 
@@ -81,7 +81,7 @@ class Bot {
 
                 '1': async () => {
 
-                    await this.say('Olá, no que posso ajudar ?');
+                    await this.say('Olá, no que posso ajudar ? 😆');
 
                     this.owner.state = 'session';
 
@@ -103,7 +103,7 @@ class Bot {
 
                 '3': async () => {
 
-                    await this.say(`Sessões são as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela !`);
+                    await this.say(`Sessões são as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela ! 😜`);
 
                 },
 
@@ -130,7 +130,7 @@ class Bot {
 
             if( this.owner.processing ){
 
-                await this.say('Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens !');
+                await this.say('Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens ! 👀');
 
                 return
 
@@ -153,7 +153,7 @@ class Bot {
 
                     const { response, sessionId } = await session.createSession(this.owner);
 
-                    await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
+                await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
 
                     await this.say(`*${sessionId.toString()}*`);
 
@@ -267,7 +267,7 @@ class Bot {
 
                     await this.say('Primeiramente, em qual idioma você gostaria que eu adaptase meu sotaque ? \nÉ interessante que você escolha meu sotaque, pois você poderá treinar a escuta de um determinado idoma através das minhas respostas 😁');
 
-                    await this.say('Lista de idiomas:\n*PT-BR* \n *EN-US*');
+                    await this.say('Lista de idiomas:\n*PT-BR* \n*EN-US*');
 
                     this.owner.state = 'lenguage-choice';
 
