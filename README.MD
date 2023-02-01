@@ -49,7 +49,7 @@ Você pode acessá-lo por aqui: <a href="https://platform.openai.com/">OpenIA</a
 
 `Crie um arquivo .env com seguinte variável de ambiente e insira sua key da API do ChatGPT:`
 
-OPENIA_KEY=suachavedaopenia
+OPENAI_KEY=suachavedaopenai
 
 `Observação:`
 
