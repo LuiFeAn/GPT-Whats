@@ -1,4 +1,4 @@
-
+// Configurações globais do software
 
 export default {
 
