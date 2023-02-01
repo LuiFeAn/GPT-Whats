@@ -128,7 +128,7 @@ class Bot {
 
             }
 
-            if( configs.responseProccesing ){
+            if( configs.responseProcessing ){
 
                 await this.say('Por favor, aguarde. No momento estou processando uma resposta.\nIsso se dá porqueê a OpenIA só me permite responder uma mensagem por vez. ✌');
 
@@ -154,11 +154,11 @@ class Bot {
                     
                     if( this.owner.sessions.length === 0 ){
 
-                        configs.responseProccesing = true;
+                        configs.responseProcessing = true;
 
                         const { response, sessionId } = await session.createSession(this.owner);
 
-                        configs.responseProccesing = false;
+                        configs.responseProcessing = false;
 
                         await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
 
@@ -174,11 +174,11 @@ class Bot {
 
                     if( this.owner.sessions.length > 0 ){
 
-                        configs.responseProccesing = true;
+                        configs.responseProcessing = true;
     
                         botResponse = await session.getSession(this.owner);
     
-                        configs.responseProccesing = false;
+                        configs.responseProcessing = false;
     
                         this.say(botResponse);
     
@@ -197,7 +197,7 @@ class Bot {
 
                 }finally{
 
-                    configs.responseProccesing = false;
+                    configs.responseProcessing = false;
 
                 }
 

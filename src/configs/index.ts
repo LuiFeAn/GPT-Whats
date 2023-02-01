@@ -3,6 +3,6 @@
 export default {
 
     connectionWithDb: false,
-    responseProccesing: false
+    responseProcessing: false
 
 }
