@@ -45,7 +45,7 @@ git clone https://github.com/LuiFeAn/GPTWhats
 
 `Faça o login no site da OpenIA e obtenha sua key para utilizar a API`
 
-<a href="https://platform.openai.com/">OpenIA</a>
+Você pode acessá-lo por aqui: <a href="https://platform.openai.com/">OpenIA</a>
 
 `Crie um arquivo .env com as seguinte informação com sua key da  API do ChatGPT:`
 
