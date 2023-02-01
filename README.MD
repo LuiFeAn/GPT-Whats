@@ -47,7 +47,7 @@ git clone https://github.com/LuiFeAn/GPTWhats
 
 Você pode acessá-lo por aqui: <a href="https://platform.openai.com/">OpenIA</a>
 
-`Crie um arquivo .env com as seguinte informação com sua key da  API do ChatGPT:`
+`Crie um arquivo .env com seguinte variável de ambiente e insira sua key da API do ChatGPT:`
 
 OPENIA_KEY=suachavedaopenia
 
