@@ -42,6 +42,7 @@ class WhatsListener {
         }
 
         const user = userRepository.find(phone);
+        
         const bot = botRepository.find(phone);
 
         if( hasMedia ){
@@ -55,8 +56,6 @@ class WhatsListener {
        if( bot && user ){
 
             user.message = body;
-
-            console.log(user);
 
             bot.states();
 
