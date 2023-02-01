@@ -130,7 +130,7 @@ class Bot {
 
             if( configs.responseProcessing ){
 
-                await this.say('Por favor, aguarde. No momento estou processando uma resposta.\nIsso se dá porqueê a OpenIA só me permite responder uma mensagem por vez. ✌');
+                await this.say('Por favor, aguarde. No momento estou processando uma resposta.\nIsso se dá porquê a OpenIA só me permite responder uma mensagem por vez. ✌');
 
                 return
 
@@ -147,7 +147,6 @@ class Bot {
             let botResponse: any;
 
             if( !this.owner.message.includes('/') ){
-
 
                 try {
 
@@ -175,19 +174,18 @@ class Bot {
                     if( this.owner.sessions.length > 0 ){
 
                         configs.responseProcessing = true;
-    
+
                         botResponse = await session.getSession(this.owner);
-    
+
                         configs.responseProcessing = false;
-    
+
                         this.say(botResponse);
-    
+
                         return
-    
-    
+
+
                     }
     
-
 
                 }catch(err){
 
