@@ -189,9 +189,19 @@ class Bot {
 
                 }catch(err){
 
-                    console.log(err);
+                    const { statusCode } = err as { statusCode: number };
 
-                    await this.say('Parece que no momento os servidores da OpenIA estão sobrecarregados. Por favor, tente movamente mais tarde ! 💕')
+                    if( statusCode === 429 ){
+
+                        await this.say('Parece que no momento os servidores da OpenIA estão sobrecarregados. Por favor, tente movamente mais tarde ! 💕')
+
+                        return
+
+                    }
+
+                    await this.say('Algum erro ocorreu durante o envio da sua resposta. Tente novamente mais tarde !');
+
+
 
                 }finally{
 
