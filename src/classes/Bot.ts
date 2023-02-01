@@ -150,12 +150,12 @@ class Bot {
 
                 try {
 
-                    
+
                     if( this.owner.sessions.length === 0 ){
 
                         configs.responseProcessing = true;
 
-                        const { response, sessionId } = await session.createSession(this.owner);
+                        const { text, sessionId } = await session.createSession(this.owner);
 
                         configs.responseProcessing = false;
 
@@ -163,7 +163,7 @@ class Bot {
 
                         await this.say(`*${sessionId.toString()}*`);
 
-                        botResponse = response;
+                        botResponse = text;
 
                         this.say(botResponse);
 
@@ -185,7 +185,7 @@ class Bot {
 
 
                     }
-    
+
 
                 }catch(err){
 

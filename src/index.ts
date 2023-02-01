@@ -14,27 +14,8 @@ import Events from './events/index.js';
 async function init(){
 
 
-    console.log('🤖: Olá ! Aguarde um pouco enquanto preparo tudo.')
+    console.log('🤖: Olá ! Aguarde um pouco enquanto preparo tudo.');
 
-    try{
-
-        await gpt.initSession();
-
-    }catch(err){
-
-        if( err instanceof ChatGPTError ){
-
-            console.log('🤖: Parece que os servidores do ChatGPT estão sobrecarregados no momento. Irei tentar novamente');
-
-            return init();
-
-        }
-
-        console.log('🤖: Ocorreu um erro durante a minha preparação.\nPor favor, informe o diretório atual do seu chrome na variável de ambiente chamada "CHROME_PATH"');
-
-        throw new BotError('Erro durante a inicialização do BOT por não encontrar o diretório do navegador chrome');
-
-    }
 
     const verifySession = fs.existsSync(path.join('./localAuth/auth.key'));
 

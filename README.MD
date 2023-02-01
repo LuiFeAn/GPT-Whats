@@ -43,21 +43,17 @@ Obs: Em desenvolvimento
 
 git clone https://github.com/LuiFeAn/GPTWhats
 
-`Crie um arquivo .env com as seguintes informações e insira seu login do ChatGPT:`
+`Faça o login no site da OpenIA e obtenha sua key para utilizar a API`
 
-CHATGPT_EMAIL= seuemaildochatgpt@gmail.com
+<a href="https://platform.openai.com/">OpenIA</a>
 
-CHATGPT_PASSWORD= suasenhadochatgpt123
+`Crie um arquivo .env com as seguinte informação com sua key da  API do ChatGPT:`
+
+OPENIA_KEY=suachavedaopenia
 
 `Observação:`
 
-1 - Não é necessário atribuir um valor à variável "CHROME_PATH". Só atribuia se você tiver alhgum problema na inicialização do BOT.
-
-2 - É necessário que tu faça login com uma conta que foi cadastrada via Google na openIA para evitar problemas na inicialização.
-
-3 - A conexão com o banco de dados só é necessária se você quiser armazenar os IDS e outras informações em um local mais sólido. Do contrário, não é necessário preencher as variáveis de ambiente referentes ao banco de dados.
-
-4 - As respostas do BOT dependem exclusivamente da mineração de dados feita pela biblioteca não oficial "CHATGPT". Logo, é possível que hajam possíveis interferências no retorno das mensagens do BOT ao usuário, dado que, eventualmente, estas são responsáveis por um terceiro.
+1 - A conexão com o banco de dados só é necessária se você quiser armazenar os IDS e outras informações em um local mais sólido. Do contrário, não é necessário preencher as variáveis de ambiente referentes ao banco de dados.
 
 `Instale todos os pacotes:`
 
