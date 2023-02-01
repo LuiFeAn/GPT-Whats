@@ -128,9 +128,9 @@ class Bot {
 
             }
 
-            if( this.owner.processing ){
+            if( configs.responseProccesing ){
 
-                await this.say('Por favor, aguarde eu processar sua resposta antes de enviar novas mensagens ! 👀');
+                await this.say('Por favor, aguarde. No momento estou processando uma resposta.\nIsso se dá porqueê a OpenIA só me permite responder uma mensagem por vez. ✌');
 
                 return
 
@@ -149,33 +149,57 @@ class Bot {
             if( !this.owner.message.includes('/') ){
 
 
-                if ( this.owner.sessions.length === 0 ){
+                try {
 
-                    const { response, sessionId } = await session.createSession(this.owner);
+                    
+                    if( this.owner.sessions.length === 0 ){
 
-                await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
+                        configs.responseProccesing = true;
 
-                    await this.say(`*${sessionId.toString()}*`);
+                        const { response, sessionId } = await session.createSession(this.owner);
 
-                    botResponse = response;
+                        configs.responseProccesing = false;
 
-                    this.say(botResponse);
+                        await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
 
-                    return
+                        await this.say(`*${sessionId.toString()}*`);
+
+                        botResponse = response;
+
+                        this.say(botResponse);
+
+                        return
+
+                    }
+
+                    if( this.owner.sessions.length > 0 ){
+
+                        configs.responseProccesing = true;
+    
+                        botResponse = await session.getSession(this.owner);
+    
+                        configs.responseProccesing = false;
+    
+                        this.say(botResponse);
+    
+                        return
+    
+    
+                    }
+    
+
+
+                }catch(err){
+
+                    console.log(err);
+
+                    await this.say('Parece que no momento os servidores da OpenIA estão sobrecarregados. Por favor, tente movamente mais tarde ! 💕')
+
+                }finally{
+
+                    configs.responseProccesing = false;
 
                 }
-
-                if( this.owner.sessions.length > 0 ){
-
-                    botResponse = await session.getSession(this.owner);
-
-                    this.say(botResponse);
-
-                    return
-
-
-                }
-
 
 
             }

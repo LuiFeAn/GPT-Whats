@@ -31,7 +31,6 @@ class WhatsListener {
                 message: body,
                 state:'welcome',
                 sessions:[],
-                processing:false,
             });
 
             botRepository.create({
@@ -56,6 +55,9 @@ class WhatsListener {
        if( bot && user ){
 
             user.message = body;
+
+            console.log(user);
+
             bot.states();
 
         }

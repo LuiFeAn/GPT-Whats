@@ -7,11 +7,7 @@ class Session {
 
         const { message } = user;
 
-        user.processing = true;
-
         const { response, messageId, conversationId } = await gpt.sendMessage(message);
-
-        user.processing = false;
 
         const sessionId = this.createSessionId();
 
@@ -45,14 +41,10 @@ class Session {
 
         if ( currentUserSession ){
 
-            user.processing = true;
-
             const { response, messageId, conversationId } = await gpt.sendMessage(message,{
                 conversationId: currentUserSession.conversationId,
                 parentMessageId: currentUserSession.messageId
             });
-
-            user.processing = false;
 
             currentUserSession.messageId = messageId;
             currentUserSession.conversationId = conversationId

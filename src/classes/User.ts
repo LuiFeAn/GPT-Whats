@@ -9,15 +9,13 @@ class User {
     message: string;
     state: State;
     sessions: GptSessions [];
-    processing: boolean;
 
-    constructor( { phone, message, state, sessions, processing}: IUser ){
+    constructor( { phone, message, state, sessions }: IUser ){
 
         this.phone = phone;
         this.message = message;
         this.state = state;
         this.sessions = sessions;
-        this.processing = processing
 
     }
 

@@ -2,6 +2,7 @@
 
 export default {
 
-    connectionWithDb: false
+    connectionWithDb: false,
+    responseProccesing: false
 
 }
