@@ -57,6 +57,8 @@ CHATGPT_PASSWORD= suasenhadochatgpt123
 
 3 - A conexão com o banco de dados só é necessária se você quiser armazenar os IDS e outras informações em um local mais sólido. Do contrário, não é necessário preencher as variáveis de ambiente referentes ao banco de dados.
 
+4 - As respostas do BOT dependem exclusivamente da mineração de dados feita pela biblioteca não oficial "CHATGPT". Logo, é possível que hajam possíveis interferências no retorno das mensagens do BOT ao usuário, dado que, eventualmente, estas são responsáveis por um terceiro.
+
 `Instale todos os pacotes:`
 
 npm install || yarn install
