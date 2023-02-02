@@ -1,12 +1,12 @@
 import { State } from "../types/alias/States.js";
-
-import { GptSessions } from "../types/GptSessions.js";
+import Session from "../models/Session.js";
+import { Options } from "../types/alias/Options.js";
 
 export interface IUser {
 
-    phone: string,
-    message: string,
+    readonly phone: string,
+    message: string | Options,
     state: State,
-    sessions: GptSessions [],
+    sessions: Session [],
 
 }

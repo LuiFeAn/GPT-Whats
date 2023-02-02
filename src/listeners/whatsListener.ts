@@ -1,14 +1,16 @@
-import WAWebJS, { ClientSession } from 'whatsapp-web.js';
+import WAWebJS from 'whatsapp-web.js';
 
 import fs from 'fs';
 import qrcode from 'qrcode-terminal';
 
 import userRepository from '../repositories/userRepository.js';
-import botRepository from '../repositories/botRepository.js';;
+import botRepository from '../repositories/botRepository.js';
+import sessionService from '../services/sessionService.js';
+
 
 class WhatsListener {
 
-    onAuth( auth: ClientSession ){
+    onAuth(){
 
         console.log('🤖: Fui autenticado com sucesso !');
 
@@ -20,17 +22,19 @@ class WhatsListener {
 
     async onMessage( message: WAWebJS.Message ) {
 
-        let { body, id: { remote: phone }, hasMedia, mediaKey, ...rest } = message;
+        let { body, id: { remote: phone }, hasMedia } = message;
 
         const userFirstMessage = userRepository.find(phone);
 
         if ( !userFirstMessage ){
 
+            const sessions = await sessionService.findSessions(phone);
+
             const user = userRepository.register({
                 phone,
                 message: body,
+                sessions: sessions,
                 state:'welcome',
-                sessions:[],
             });
 
             botRepository.create({
@@ -38,11 +42,10 @@ class WhatsListener {
             });
 
 
-
         }
 
         const user = userRepository.find(phone);
-        
+
         const bot = botRepository.find(phone);
 
         if( hasMedia ){

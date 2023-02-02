@@ -1,6 +1,5 @@
 
 import { whats } from '../providers/index.js';
-import { Options } from '../types/alias/Options.js';
 import { BotOptions } from '../types/BotOptions.js';
 
 import User from './User.js';
@@ -8,7 +7,6 @@ import Audio from './Audio.js';
 import session from './Session.js';
 
 import configs from '../configs/index.js';
-import { State } from '../types/alias/States.js';
 
 class Bot {
 
@@ -27,7 +25,6 @@ class Bot {
 
     async states() {
 
-
         const verifyState = {
 
             'welcome': async () => {
@@ -35,9 +32,9 @@ class Bot {
                 await this.say('Primeiramente, por favor, me dê um nome 😎');
 
                 await this.say('Qual nome você gostaria de me dar ? 👀');
-    
+
                 this.owner.state = 'choice-bot-name';
-                
+
             },
 
             'choice-bot-name':  async () => {
@@ -59,11 +56,11 @@ class Bot {
                 const validInitialMessages = ['1','2','3','4'];
 
                 if( !validInitialMessages.includes(this.owner.message) ){
-    
+
                    await this.say('Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
-    
+
                    return
-    
+
                 }
 
                 const verifySelectedOption = {
@@ -113,91 +110,91 @@ class Bot {
                 if( !this.options.audio ){
 
                     await this.say('*Digitando...*');
-    
+
                 }
-    
+
                 if( configs.responseProcessing ){
-    
+
                     await this.say('Por favor, aguarde. No momento estou processando uma resposta.\nIsso se dá porquê a OpenIA só me permite responder uma mensagem por vez. ✌');
-    
+
                     return
-    
+
                 }
-    
+
                 if( this.owner.message[0] === '/' ){
-    
+
                     await this.commands(this.owner.message);
-    
+
                     return;
-    
+
                 }
-    
+
                 let botResponse: any;
-    
+
                 if( !this.owner.message.includes('/') ){
-    
+
                     try {
-    
-    
+
+
                         if( this.owner.sessions.length === 0 ){
-    
+
                             configs.responseProcessing = true;
-    
+
                             const { text, sessionId } = await session.createSession(this.owner);
-    
+
                             configs.responseProcessing = false;
-    
+
                             await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
-    
+
                             await this.say(`*${sessionId.toString()}*`);
-    
+
                             botResponse = text;
-    
+
                             this.say(botResponse);
-    
+
                             return
-    
+
                         }
-    
+
                         if( this.owner.sessions.length > 0 ){
-    
+
                             configs.responseProcessing = true;
-    
+
                             botResponse = await session.getSession(this.owner);
-    
+
                             configs.responseProcessing = false;
-    
+
                             this.say(botResponse);
-    
+
                             return
-    
-    
+
+
                         }
-    
-    
+
+
                     }catch(err){
-    
+
                         const { statusCode } = err as { statusCode: number };
-    
+
                         if( statusCode === 429 ){
-    
+
                             await this.say('Parece que no momento os servidores da OpenIA estão sobrecarregados. Por favor, tente movamente mais tarde ! 💕')
-    
+
                             return
-    
+
                         }
-    
+
                         await this.say('Algum erro ocorreu durante o envio da sua resposta. Tente novamente mais tarde !');
-    
-    
-    
+
+
+
                     }finally{
-    
+
                         configs.responseProcessing = false;
-    
+
                     }
-    
-    
+
+
                 }
 
             },
@@ -207,17 +204,17 @@ class Bot {
                 const validLenguages = ['pt-br','en-us'];
 
                 if( !validLenguages.includes(this.owner.message.toLowerCase()) ){
-    
+
                     this.say('A linguagem selecionada é inválida !');
-    
+
                     return;
-    
+
                 }
-    
+
                 await this.say(`Ótimo ! irei responder você em ${this.owner.message}`)
-    
+
                 this.options.language = this.owner.message;
-    
+
                 this.owner.state = 'session';
 
             },

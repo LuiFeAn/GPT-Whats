@@ -4,36 +4,26 @@ import User from "./User.js";
 import { v4 } from "uuid";
 
 import { ICreateSession } from "../interfaces/ICreateSession.js";
-import configs from "../configs/index.js";
+
 import sessionService from "../services/sessionService.js";
+
 
 class Session {
 
     async createSession( user: User ): Promise< ICreateSession >{
 
-        const { message } = user;
+        const { message, phone } = user;
 
         const { text, parentMessageId: conversationId, id: parentMessageId } = await gpt.sendMessage(message);
 
         const sessionId = v4();
 
-        if( configs.connectionWithDb ){
-
-            await sessionService.createSession({
-                sessionId: sessionId!,
-                messageId: parentMessageId!,
-                conversationId: conversationId!
-            });
-
-        }else{
-
-            user.sessions.push({
-                sessionId,
-                messageId: parentMessageId!,
-                conversationId: conversationId!
-            });
-
-        }
+        await sessionService.createSession({
+            sessionId: sessionId!,
+            phone,
+            messageId: parentMessageId!,
+            conversationId: conversationId!
+        });
 
         return {
             text,
@@ -43,21 +33,22 @@ class Session {
 
     }
 
+
     async getSession( user: User ): Promise <string | undefined> {
 
         const { message } = user;
 
-        const currentUserSession = user.sessions[0];
+        const session = await sessionService.findCurrentSession( user.phone );
 
-        if ( currentUserSession ){
+        if ( session ){
 
             const { text, parentMessageId: conversationId, id: parentMessageId } = await gpt.sendMessage(message,{
-                conversationId: currentUserSession.conversationId,
-                parentMessageId: currentUserSession.messageId
+                conversationId: session.conversation_id,
+                parentMessageId: session.message_id
             });
 
-            currentUserSession.messageId = parentMessageId!;
-            currentUserSession.conversationId = conversationId!
+            session.message_id = parentMessageId!;
+            session.conversation_id = conversationId!
 
             return text;
 

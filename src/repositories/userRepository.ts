@@ -6,7 +6,7 @@ import User from "../classes/User.js";
 
 class UserRepository {
 
-    register({ phone,message,state, sessions }: IUser){
+    register({ phone, message, state, sessions }: IUser){
 
         const user = new User({
             phone,

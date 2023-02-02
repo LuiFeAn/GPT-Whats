@@ -4,7 +4,7 @@ export class initialMigration1675126330172 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
 
-        queryRunner.createTable( new Table({
+        await queryRunner.createTable( new Table({
 
             name:'sessions',
             columns:[
@@ -12,10 +12,13 @@ export class initialMigration1675126330172 implements MigrationInterface {
                 {
                     name:'session_id',
                     type:'uuid',
-                    generationStrategy:'uuid',
                     isPrimary:true,
-                    default:'uuid_generate_v4()'
 
+                },
+                {
+                    name:'phone',
+                    type:'varchar',
+                    length:'50'
                 },
                 {
                     name:'conversation_id',
@@ -23,7 +26,12 @@ export class initialMigration1675126330172 implements MigrationInterface {
                 },
                 {
                     name:'message_id',
-                    type:'uuid'
+                    type:'varchar'
+                },
+                {
+                    name:'selected_section',
+                    type:'varchar',
+                    length:'3'
                 }
 
             ]
