@@ -2,15 +2,15 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
 
 @Entity('sessions')
 class Session {
-    
+
     @PrimaryGeneratedColumn('uuid')
-    sessionId!: string;
+    session_id!: string;
 
     @Column('varchar')
-    conversationId!: string;
+    conversation_id!: string;
 
     @Column('varchar')
-    messageId!: string;
+    message_id!: string;
 
 }
 
