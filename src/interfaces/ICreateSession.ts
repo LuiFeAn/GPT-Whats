@@ -3,6 +3,6 @@
 export interface ICreateSession {
 
     text: string,
-    sessionId: number
+    sessionId: string
 
 }

@@ -1,6 +1,6 @@
 export type GptSessions = {
 
-    sessionId: number,
+    sessionId: string,
     messageId: string,
     conversationId: string,
 
