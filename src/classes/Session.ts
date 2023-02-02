@@ -9,8 +9,8 @@ class Session {
 
         const { message } = user;
 
-        const { text, parentMessageId, conversationId } = await gpt.sendMessage(message);
-
+        const { text, parentMessageId: conversationId, id: parentMessageId } = await gpt.sendMessage(message);
+        
         const sessionId = this.createSessionId();
 
         user.sessions.push({
@@ -43,7 +43,7 @@ class Session {
 
         if ( currentUserSession ){
 
-            const { text, parentMessageId, conversationId } = await gpt.sendMessage(message,{
+            const { text, parentMessageId: conversationId, id: parentMessageId } = await gpt.sendMessage(message,{
                 conversationId: currentUserSession.conversationId,
                 parentMessageId: currentUserSession.messageId
             });
