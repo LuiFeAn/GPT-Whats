@@ -8,6 +8,7 @@ import Audio from './Audio.js';
 import session from './Session.js';
 
 import configs from '../configs/index.js';
+import { State } from '../types/alias/States.js';
 
 class Bot {
 
@@ -26,228 +27,216 @@ class Bot {
 
     async states() {
 
-        if( this.owner.state === 'welcome' ){
 
-            await this.say('Primeiramente, por favor, me dê um nome 😎');
+        const verifyState = {
 
-            await this.say('Qual nome você gostaria de me dar ? 👀');
+            'welcome': async () => {
 
-            this.owner.state = 'choice-bot-name';
+                await this.say('Primeiramente, por favor, me dê um nome 😎');
 
-            return
+                await this.say('Qual nome você gostaria de me dar ? 👀');
+    
+                this.owner.state = 'choice-bot-name';
+                
+            },
 
-        }
+            'choice-bot-name':  async () => {
 
-        if( this.owner.state === 'choice-bot-name' ){
+                this.botName = this.owner.message;
 
-            this.botName = this.owner.message;
+                await this.say(`Ótimo ! me chamo ${this.botName}. Obrigado por me nomear ❤`);
 
-            await this.say(`Ótimo ! me chamo ${this.botName}. Obrigado por me nomear ❤`);
+                await this.say('Primeiramente, gostaria de informar que sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas.');
 
-            await this.say('Primeiramente, gostaria de informar que sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas.');
+                this.say("Me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)*");
 
-            this.say("Me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)*");
+                this.owner.state = 'select-option';
 
-            this.owner.state = 'before-select-option';
+            },
 
-            return
+            'select-option': async () => {
 
+                const validInitialMessages = ['1','2','3','4'];
 
-        }
+                if( !validInitialMessages.includes(this.owner.message) ){
+    
+                   await this.say('Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
+    
+                   return
+    
+                }
 
+                const verifySelectedOption = {
 
-        if( this.owner.state === 'before-select-option' ){
+                    '1': async () => {
 
-            const validInitialMessages = ['1','2','3','4'];
+                        await this.say('Olá, no que posso ajudar ? 😆');
 
-            if( !validInitialMessages.includes(this.owner.message) ){
+                        this.owner.state = 'session';
 
-               await this.say('Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
+                    },
 
-               return
+                    '2': async () => {
 
-            }
+                        if( !configs.connectionWithDb ){
 
-            this.owner.state = 'after-select-option';
+                            await this.say('Não estou conectado a um banco de dados propriamente dito no momento. Tente novamente mais tarde !');
 
+                            return;
 
-        }
+                        }
 
-        if( this.owner.state === 'after-select-option' ){
+                        this.owner.state = 'find-session';
 
-            (this.owner.message as Options);
+                    },
 
-            const verifySelectedOption = {
+                    '3': async () => {
 
-                '1': async () => {
+                        await this.say(`Sessões são as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela ! 😜`);
 
-                    await this.say('Olá, no que posso ajudar ? 😆');
+                    },
 
-                    this.owner.state = 'session';
+                    '4': async () => {
 
-                },
+                        await this.say('Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio*');
 
-                '2': async () => {
-
-                   if( !configs.connectionWithDb ){
-
-                        await this.say('Não estou conectado a um banco de dados propriamente dito no momento. Tente novamente mais tarde !');
-
-                        return;
-
-                   }
-
-                   this.owner.state = 'find-session';
-
-                },
-
-                '3': async () => {
-
-                    await this.say(`Sessões são as conversas que você manteve comigo anteriormente. Se você deseja recuperar uma antiga sessão, basta fornecer o ID dela ! 😜`);
-
-                },
-
-                '4': async () => {
-
-                    await this.say('Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio*');
+                    }
 
                 }
 
-            }
+                return await verifySelectedOption[this.owner.message]();
 
-            return await verifySelectedOption[this.owner.message]();
+            },
 
+            'session': async () => {
 
-        }
+                if( !this.options.audio ){
 
-        if( this.owner.state === 'session' ){
+                    await this.say('*Digitando...*');
+    
+                }
+    
+                if( configs.responseProcessing ){
+    
+                    await this.say('Por favor, aguarde. No momento estou processando uma resposta.\nIsso se dá porquê a OpenIA só me permite responder uma mensagem por vez. ✌');
+    
+                    return
+    
+                }
+    
+                if( this.owner.message[0] === '/' ){
+    
+                    await this.commands(this.owner.message);
+    
+                    return;
+    
+                }
+    
+                let botResponse: any;
+    
+                if( !this.owner.message.includes('/') ){
+    
+                    try {
+    
+    
+                        if( this.owner.sessions.length === 0 ){
+    
+                            configs.responseProcessing = true;
+    
+                            const { text, sessionId } = await session.createSession(this.owner);
+    
+                            configs.responseProcessing = false;
+    
+                            await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
+    
+                            await this.say(`*${sessionId.toString()}*`);
+    
+                            botResponse = text;
+    
+                            this.say(botResponse);
+    
+                            return
+    
+                        }
+    
+                        if( this.owner.sessions.length > 0 ){
+    
+                            configs.responseProcessing = true;
+    
+                            botResponse = await session.getSession(this.owner);
+    
+                            configs.responseProcessing = false;
+    
+                            this.say(botResponse);
+    
+                            return
+    
+    
+                        }
+    
+    
+                    }catch(err){
+    
+                        const { statusCode } = err as { statusCode: number };
+    
+                        if( statusCode === 429 ){
+    
+                            await this.say('Parece que no momento os servidores da OpenIA estão sobrecarregados. Por favor, tente movamente mais tarde ! 💕')
+    
+                            return
+    
+                        }
+    
+                        await this.say('Algum erro ocorreu durante o envio da sua resposta. Tente novamente mais tarde !');
+    
+    
+    
+                    }finally{
+    
+                        configs.responseProcessing = false;
+    
+                    }
+    
+    
+                }
 
-            if( !this.options.audio ){
+            },
 
-                await this.say('*Digitando...*');
+            'lenguage-choice': async () => {
 
-            }
+                const validLenguages = ['pt-br','en-us'];
 
-            if( configs.responseProcessing ){
+                if( !validLenguages.includes(this.owner.message.toLowerCase()) ){
+    
+                    this.say('A linguagem selecionada é inválida !');
+    
+                    return;
+    
+                }
+    
+                await this.say(`Ótimo ! irei responder você em ${this.owner.message}`)
+    
+                this.options.language = this.owner.message;
+    
+                this.owner.state = 'session';
 
-                await this.say('Por favor, aguarde. No momento estou processando uma resposta.\nIsso se dá porquê a OpenIA só me permite responder uma mensagem por vez. ✌');
+            },
 
-                return
+            'find-session': async () => {
 
-            }
+                // const session = await sessionService.findSession(this.owner.message);
 
-            if( this.owner.message[0] === '/' ){
+                await this.say('Esta funcionalidade está em desenvolvimento');
 
-                await this.commands(this.owner.message);
+                this.owner.state = 'session';
 
                 return;
 
             }
 
-            let botResponse: any;
-
-            if( !this.owner.message.includes('/') ){
-
-                try {
-
-
-                    if( this.owner.sessions.length === 0 ){
-
-                        configs.responseProcessing = true;
-
-                        const { text, sessionId } = await session.createSession(this.owner);
-
-                        configs.responseProcessing = false;
-
-                        await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
-
-                        await this.say(`*${sessionId.toString()}*`);
-
-                        botResponse = text;
-
-                        this.say(botResponse);
-
-                        return
-
-                    }
-
-                    if( this.owner.sessions.length > 0 ){
-
-                        configs.responseProcessing = true;
-
-                        botResponse = await session.getSession(this.owner);
-
-                        configs.responseProcessing = false;
-
-                        this.say(botResponse);
-
-                        return
-
-
-                    }
-
-
-                }catch(err){
-
-                    const { statusCode } = err as { statusCode: number };
-
-                    if( statusCode === 429 ){
-
-                        await this.say('Parece que no momento os servidores da OpenIA estão sobrecarregados. Por favor, tente movamente mais tarde ! 💕')
-
-                        return
-
-                    }
-
-                    await this.say('Algum erro ocorreu durante o envio da sua resposta. Tente novamente mais tarde !');
-
-
-
-                }finally{
-
-                    configs.responseProcessing = false;
-
-                }
-
-
-            }
-
-
         }
 
-        if( this.owner.state === 'lenguage-choice' ){
-
-
-            const validLenguages = ['pt-br','en-us'];
-
-            if( !validLenguages.includes(this.owner.message.toLowerCase()) ){
-
-                this.say('A linguagem selecionada é inválida !');
-
-                return;
-
-            }
-
-            await this.say(`Ótimo ! irei responder você em ${this.owner.message}`)
-
-            this.options.language = this.owner.message;
-
-            this.owner.state = 'session';
-
-        }
-
-        if( this.owner.state === 'find-session' ){
-
-            // const session = await sessionService.findSession(this.owner.message);
-
-            await this.say('Esta funcionalidade está em desenvolvimento');
-
-            this.owner.state = 'session';
-
-            return;
-
-
-        }
+        verifyState[this.owner.state]();
 
 
     }

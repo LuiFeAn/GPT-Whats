@@ -1,2 +1,2 @@
 
-export type State = 'welcome' | 'after-select-option' | 'before-select-option' | 'session' | 'lenguage-choice' | 'choice-bot-name' | 'find-session';
+export type State = 'welcome' | 'select-option' | 'session' | 'lenguage-choice' | 'choice-bot-name' | 'find-session';
