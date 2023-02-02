@@ -35,7 +35,9 @@ Tecnologias e bibliotecas que utilizei durante este projeto:
 
 Este projeto tem por fim ser um BOT pessoal no Whatsapp, cujo qual o usuário pode personalizá-lo e usufruir de suas funcionalidades. Surgiu com base a minha necessidade de otimizar minha rotina, além de me auxiliar como um todo durente o desenvolvimento de minhas aplicações.
 
-Obs: Em desenvolvimento
+OBSERVAÇÃO IMPORTENTE:
+
+ESTA BRANCH É RESPONSÁVEL PELO SUPORTE AO BANCO DE DADOS E APRESENTA INSTABILIDADE.
 
 ## 👨‍💻 Instalação
 
