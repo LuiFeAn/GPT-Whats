@@ -1,7 +1,10 @@
 import { gpt } from "../providers/index.js";
 import User from "./User.js";
 
+import { v4 } from "uuid";
+
 import { ICreateSession } from "../interfaces/ICreateSession.js";
+import configs from "../configs/index.js";
 
 class Session {
 
@@ -11,13 +14,19 @@ class Session {
 
         const { text, parentMessageId: conversationId, id: parentMessageId } = await gpt.sendMessage(message);
         
-        const sessionId = this.createSessionId();
+        const sessionId = v4();
 
-        user.sessions.push({
-            sessionId,
-            messageId: parentMessageId!,
-            conversationId: conversationId!
-        });
+        if( configs.connectionWithDb ){
+            //
+        }else{
+
+            user.sessions.push({
+                sessionId,
+                messageId: parentMessageId!,
+                conversationId: conversationId!
+            });
+            
+        }
 
         return {
             text,
@@ -25,15 +34,7 @@ class Session {
         }
 
 
-    }
-
-    private createSessionId(){
-
-        const sessionId = Math.floor( Math.random () * 1323234);
-
-        return sessionId;
-
-    }
+    } 
 
     async getSession( user: User ): Promise <string | undefined> {
 
