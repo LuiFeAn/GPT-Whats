@@ -36,7 +36,7 @@ async function ConnectToDabase(){
 
         await AppDataSource.initialize();
 
-        console.log('Conexão com o BD estabelecida com sucesso ! ✅🔥');
+        console.log('🤖: Minha conexão com o banco de dados foi estabelecida com sucesso ! 😁');
 
         configs.connectionWithDb = true;
 
