@@ -5,6 +5,7 @@ import { v4 } from "uuid";
 
 import { ICreateSession } from "../interfaces/ICreateSession.js";
 import configs from "../configs/index.js";
+import sessionService from "../services/sessionService.js";
 
 class Session {
 
@@ -13,11 +14,17 @@ class Session {
         const { message } = user;
 
         const { text, parentMessageId: conversationId, id: parentMessageId } = await gpt.sendMessage(message);
-        
+
         const sessionId = v4();
 
         if( configs.connectionWithDb ){
-            //
+
+            await sessionService.createSession({
+                sessionId: sessionId!,
+                messageId: parentMessageId!,
+                conversationId: conversationId!
+            });
+
         }else{
 
             user.sessions.push({
@@ -25,7 +32,7 @@ class Session {
                 messageId: parentMessageId!,
                 conversationId: conversationId!
             });
-            
+
         }
 
         return {
@@ -34,7 +41,7 @@ class Session {
         }
 
 
-    } 
+    }
 
     async getSession( user: User ): Promise <string | undefined> {
 
