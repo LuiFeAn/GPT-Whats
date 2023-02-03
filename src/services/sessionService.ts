@@ -1,16 +1,23 @@
 import Session from "../models/Session.js";
-import AppDataSource from "../database/dbConfig.js";
 import { Repository } from "typeorm";
 
 import { GptSessions } from "../types/GptSessions.js";
 import configs from "../configs/index.js";
 
 import { sessions } from "../database/index.js";
+import { sessionRepository } from "../repositories/sessionRepository.js";
 
 
 interface ICreateSession extends GptSessions {
 
     phone: string
+
+}
+
+interface UpdateSession {
+
+    messageId: string;
+    conversationId: string;
 
 }
 
@@ -21,16 +28,17 @@ class SessionService {
 
     constructor(){
 
-        this.repository = AppDataSource.getRepository(Session)
+        this.repository = sessionRepository
 
     }
 
-    async createSession({ sessionId, messageId, phone, conversationId }: ICreateSession){
+    async createSession(sessionName: string,{ sessionId, messageId, phone, conversationId }: ICreateSession){
 
 
         if( configs.connectionWithDb ){
 
             const session = this.repository.create({
+                session_name: sessionName,
                 session_id: sessionId,
                 phone,
                 selected_session:'yes',
@@ -43,6 +51,7 @@ class SessionService {
         }else{
 
             sessions.push({
+                session_name: sessionName,
                 session_id: sessionId,
                 phone,
                 selected_session:'yes',
@@ -58,7 +67,7 @@ class SessionService {
 
         if( configs.connectionWithDb ){
 
-            const currentSession = this.repository.findOneBy({
+            const currentSession = await this.repository.findOneBy({
                 phone,
                 selected_session:'yes'
             });
@@ -67,9 +76,31 @@ class SessionService {
 
         }
 
+
         const currentSession = sessions.find( session => session.selected_session === 'yes' && session.phone === phone );
 
         return currentSession;
+
+    }
+
+    async updateSession(sessionId: string, { messageId, conversationId }: UpdateSession ){
+
+        if( configs.connectionWithDb ){
+
+            await this.repository.update(sessionId,{
+                message_id: messageId,
+                conversation_id: conversationId
+            });
+
+            return;
+
+        }
+
+        const currentSession = sessions.find( session => session.session_id === sessionId);
+
+        currentSession!.message_id = messageId;
+        currentSession!.conversation_id = conversationId
+
 
     }
 
