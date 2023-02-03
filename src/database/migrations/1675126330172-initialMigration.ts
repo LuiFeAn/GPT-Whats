@@ -16,6 +16,10 @@ export class initialMigration1675126330172 implements MigrationInterface {
 
                 },
                 {
+                    name:'session_name',
+                    type:'varchar',
+                },
+                {
                     name:'phone',
                     type:'varchar',
                     length:'50'
@@ -29,7 +33,7 @@ export class initialMigration1675126330172 implements MigrationInterface {
                     type:'varchar'
                 },
                 {
-                    name:'selected_section',
+                    name:'selected_session',
                     type:'varchar',
                     length:'3'
                 }
