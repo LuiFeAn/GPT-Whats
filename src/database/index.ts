@@ -1,8 +1,8 @@
 import Bot from "../classes/Bot.js";
-import { IUser } from "../interfaces/IUser.js";
+import User from "../classes/User.js";
 import Session from "../models/Session.js";
 
-export const users: IUser [] = [];
+export const users: User [] = [];
 
 export const sessions: Session [] = [];
 
