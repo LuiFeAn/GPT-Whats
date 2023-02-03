@@ -12,12 +12,12 @@ class User {
     state: State;
     sessions: Session [];
 
-    constructor( { phone, message, state, sessions }: IUser ){
+    constructor( { phone, message }: IUser ){
 
         this.phone = phone;
         this.message = message;
-        this.state = state;
-        this.sessions = sessions
+        this.state = 'welcome'
+        this.sessions = []
 
     }
 
