@@ -23,6 +23,7 @@ class Bot {
         this.options = options;
         this.memory = {
             session_name:'',
+            newSession:false,
         }
 
 
@@ -59,6 +60,8 @@ class Bot {
                     '1': async () => {
 
                         await this.say('Primeiramente, por favor, dê um nome a esta sessão.\n Dar um nome a uma sessão é importante para que posteriormente você saiba exatamente qual era o contexto de uma possível sessão anterior.');
+
+                        this.memory.newSession = true;
 
                         this.owner.state = 'choice-session-name';
 
@@ -168,7 +171,7 @@ class Bot {
                     try {
 
 
-                        if( this.owner.sessions.length === 0 ){
+                        if( this.memory.newSession ){
 
                             configs.responseProcessing = true;
 
@@ -188,7 +191,7 @@ class Bot {
 
                         }
 
-                        if( this.owner.sessions.length > 0 ){
+                        if( !this.memory.newSession ){
 
                             configs.responseProcessing = true;
 

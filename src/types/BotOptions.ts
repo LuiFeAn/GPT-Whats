@@ -1,6 +1,7 @@
 export type BotMemory = {
 
     session_name:string
+    newSession:boolean,
 
 }
 
