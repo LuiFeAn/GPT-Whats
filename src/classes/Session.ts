@@ -10,7 +10,7 @@ import sessionService from "../services/sessionService.js";
 
 class Session {
 
-    async createSession( user: User ): Promise< ICreateSession >{
+    async createSession( user: User, sessionName: string ): Promise< ICreateSession >{
 
         const { message, phone } = user;
 
@@ -18,7 +18,7 @@ class Session {
 
         const sessionId = v4();
 
-        await sessionService.createSession({
+        await sessionService.createSession(sessionName,{
             sessionId: sessionId!,
             phone,
             messageId: parentMessageId!,
@@ -34,11 +34,14 @@ class Session {
     }
 
 
+
     async getSession( user: User ): Promise <string | undefined> {
 
         const { message } = user;
 
         const session = await sessionService.findCurrentSession( user.phone );
+
+        console.log(session);
 
         if ( session ){
 
@@ -47,8 +50,10 @@ class Session {
                 parentMessageId: session.message_id
             });
 
-            session.message_id = parentMessageId!;
-            session.conversation_id = conversationId!
+            await sessionService.updateSession(session.session_id,{
+                conversationId: conversationId!,
+                messageId: parentMessageId
+            })
 
             return text;
 
