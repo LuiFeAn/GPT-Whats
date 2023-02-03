@@ -7,6 +7,9 @@ class Session {
     session_id!: string;
 
     @Column('varchar')
+    session_name!: string;
+
+    @Column('varchar')
     phone!: string
 
     @Column('varchar')
