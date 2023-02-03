@@ -24,17 +24,13 @@ class WhatsListener {
 
         let { body, id: { remote: phone }, hasMedia } = message;
 
-        const userFirstMessage = userRepository.find(phone);
+        const sessions = await sessionService.findSessions(phone);
 
-        if ( !userFirstMessage ){
-
-            const sessions = await sessionService.findSessions(phone);
+        if ( sessions.length === 0 ){
 
             const user = userRepository.register({
                 phone,
                 message: body,
-                sessions: sessions,
-                state:'welcome',
             });
 
             botRepository.create({
@@ -44,7 +40,10 @@ class WhatsListener {
 
         }
 
+
         const user = userRepository.find(phone);
+
+        user!.sessions = sessions;
 
         const bot = botRepository.find(phone);
 
