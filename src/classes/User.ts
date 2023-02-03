@@ -22,6 +22,13 @@ class User {
     }
 
 
+    updateSessions(newSessions: Session []){
+
+        this.sessions = newSessions;
+
+    }
+
+
 
 }
 

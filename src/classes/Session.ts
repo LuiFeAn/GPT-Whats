@@ -41,8 +41,6 @@ class Session {
 
         const session = await sessionService.findCurrentSession( user.phone );
 
-        console.log(session);
-
         if ( session ){
 
             const { text, parentMessageId: conversationId, id: parentMessageId } = await gpt.sendMessage(message,{

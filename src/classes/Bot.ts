@@ -2,11 +2,14 @@
 import { whats } from '../providers/index.js';
 import { BotMemory, BotOptions } from '../types/BotOptions.js';
 
+import validUUID from '../utils/validUUID.js';
+
 import User from './User.js';
 import Audio from './Audio.js';
 import session from './Session.js';
 
 import configs from '../configs/index.js';
+import sessionService from '../services/sessionService.js';
 
 class Bot {
 
@@ -34,7 +37,7 @@ class Bot {
 
                 await this.say('Olá. me chamo Wrench. Sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas.');
 
-                this.say("Me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)* \n\n 5* - Sessões anteriores*");
+                this.say("Me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Sessões anteriores* \n\n *5 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)*");
 
                 this.owner.state = 'select-option';
             },
@@ -72,6 +75,8 @@ class Bot {
 
                         }
 
+                        await this.say('Certo. Me informe o ID da sessão que deseja recupear')
+
                         this.owner.state = 'find-session';
 
                     },
@@ -84,12 +89,6 @@ class Bot {
 
                     '4': async () => {
 
-                        await this.say('Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio*');
-
-                    },
-
-                    '5': async () => {
-
                         if( this.owner.sessions.length === 0 ){
 
                             await this.say('Você não possui nenhuma sessão no momento.');
@@ -100,15 +99,22 @@ class Bot {
 
                         await this.say('Essas são todas as suas sessões existentes:')
 
-                        let allSessions = '';
+                        this.owner.sessions.forEach( async session => {
 
-                        this.owner.sessions.forEach( session => {
 
-                            allSessions += ` Nome: ${session.session_name} \n\n id: ${session.session_id}`;
+                            await this.say(`*Nome: ${session.session_name.toUpperCase()}* *\nID desta sessão*`);
+
+                            await this.say(`*${session.session_id}*`);
+
 
                         });
 
-                        await this.say(allSessions);
+
+                    },
+
+                    '5': async () => {
+
+                        await this.say('Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio*');
 
 
                     }
@@ -249,9 +255,23 @@ class Bot {
 
             'find-session': async () => {
 
-                // const session = await sessionService.findSession(this.owner.message);
+                if( !validUUID(this.owner.message)){
 
-                await this.say('Esta funcionalidade está em desenvolvimento');
+                    return this.say('Este não é um ID válido. Por favor, me força o ID correto.');
+
+                }
+
+                const session = await sessionService.setSessionWithCurrent(this.owner.message);
+
+                if( !session ){
+
+                    this.say('Esta sessão não existe');
+
+                    return;
+
+                }
+
+                await this.say(`Tudo certo ! a sessão foi recuperada`);
 
                 this.owner.state = 'session';
 

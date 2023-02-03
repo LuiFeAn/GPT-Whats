@@ -104,6 +104,24 @@ class SessionService {
 
     }
 
+    async setSessionWithCurrent(id: string){
+
+        const find = this.findSession(id);
+
+        if( !find ){
+
+            return
+
+        }
+
+        const session = await this.repository.update(id,{
+            selected_session:'yes'
+        });
+
+        return session;
+
+    }
+
     async findSessions(phone: string){
 
         if( configs.connectionWithDb ){

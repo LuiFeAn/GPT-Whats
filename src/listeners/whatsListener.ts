@@ -24,9 +24,11 @@ class WhatsListener {
 
         let { body, id: { remote: phone }, hasMedia } = message;
 
-        const sessions = await sessionService.findSessions(phone);
+        //Verifica se um usuário já existe em memória
+        const verifyIfUsersExistsInMemory = userRepository.find( phone );
 
-        if ( sessions.length === 0 ){
+        // Caso não exista, registra ele em memória e cria uma nova instância do bot para este usuário
+        if ( !verifyIfUsersExistsInMemory ){
 
             const user = userRepository.register({
                 phone,
@@ -41,12 +43,13 @@ class WhatsListener {
         }
 
 
+        //Busca o usuário criado anteriormente em memória
         const user = userRepository.find(phone);
 
-        user!.sessions = sessions;
-
+        //Busca a instância do bot criado anteriormente em memória pelo número do usuário
         const bot = botRepository.find(phone);
 
+        //Condidção aplicada para verificar se a mensagem do usuário foi multimídia
         if( hasMedia ){
 
             await bot!.say('Infelizmente não consigo reconhecer mensagens multimídia. Por favor, envie apenas textos ! 😁');
@@ -56,6 +59,12 @@ class WhatsListener {
         }
 
        if( bot && user ){
+
+            //Busca toas as sessões referentes a aquele usuário pelo seu número de telefone
+            const sessions = await sessionService.findSessions(phone);
+
+             //Aplica as sessões armazenadas no banco de dados às suas sessões
+            user.updateSessions(sessions);
 
             user.message = body;
 
