@@ -5,7 +5,10 @@
   "scripts": {
     "bot": "node build/index.js",
     "dev-bot": "nodemon",
-    "build": "tsc"
+    "build": "tsc",
+    "typeorm": "typeorm-ts-node-esm",
+    "typeorm:migrate": "npm run typeorm migration:run -- -d ./src/database/dbConfig.ts",
+    "typeorm:revert": "npm run typeorm migration:revert -- -d  src/database/dbConfig.ts"
   },
   "author": "Luis Fernando",
   "license": "ISC",
@@ -13,7 +16,7 @@
   "dependencies": {
     "@types/node": "^18.11.18",
     "@types/qrcode-terminal": "^0.12.0",
-    "chatgpt": "^4.0.0",
+    "chatgpt": "^4.1.1",
     "dotenv": "^16.0.3",
     "gtts": "^0.2.1",
     "pg": "^8.9.0",
