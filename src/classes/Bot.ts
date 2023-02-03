@@ -1,6 +1,6 @@
 
 import { whats } from '../providers/index.js';
-import { BotOptions } from '../types/BotOptions.js';
+import { BotMemory, BotOptions } from '../types/BotOptions.js';
 
 import User from './User.js';
 import Audio from './Audio.js';
@@ -11,13 +11,16 @@ import configs from '../configs/index.js';
 class Bot {
 
     owner: User
-    botName!: string
     private options: BotOptions;
+    private memory: BotMemory
 
     constructor(owner: User ,options: BotOptions = { audio: false, language: 'pt-br' }){
 
         this.owner = owner;
         this.options = options;
+        this.memory = {
+            session_name:'',
+        }
 
 
     }
@@ -29,31 +32,16 @@ class Bot {
 
             'welcome': async () => {
 
-                await this.say('Primeiramente, por favor, me dê um nome 😎');
+                await this.say('Olá. me chamo Wrench. Sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas.');
 
-                await this.say('Qual nome você gostaria de me dar ? 👀');
-
-                this.owner.state = 'choice-bot-name';
-
-            },
-
-            'choice-bot-name':  async () => {
-
-                this.botName = this.owner.message;
-
-                await this.say(`Ótimo ! me chamo ${this.botName}. Obrigado por me nomear ❤`);
-
-                await this.say('Primeiramente, gostaria de informar que sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas.');
-
-                this.say("Me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)*");
+                this.say("Me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)* \n\n 5* - Sessões anteriores*");
 
                 this.owner.state = 'select-option';
-
             },
 
             'select-option': async () => {
 
-                const validInitialMessages = ['1','2','3','4'];
+                const validInitialMessages = ['1','2','3','4','5'];
 
                 if( !validInitialMessages.includes(this.owner.message) ){
 
@@ -67,11 +55,12 @@ class Bot {
 
                     '1': async () => {
 
-                        await this.say('Olá, no que posso ajudar ? 😆');
+                        await this.say('Primeiramente, por favor, dê um nome a esta sessão.\n Dar um nome a uma sessão é importante para que posteriormente você saiba exatamente qual era o contexto de uma possível sessão anterior.');
 
-                        this.owner.state = 'session';
+                        this.owner.state = 'choice-session-name';
 
                     },
+
 
                     '2': async () => {
 
@@ -97,11 +86,48 @@ class Bot {
 
                         await this.say('Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio*');
 
+                    },
+
+                    '5': async () => {
+
+                        if( this.owner.sessions.length === 0 ){
+
+                            await this.say('Você não possui nenhuma sessão no momento.');
+
+                            return
+
+                        }
+
+                        await this.say('Essas são todas as suas sessões existentes:')
+
+                        let allSessions = '';
+
+                        this.owner.sessions.forEach( session => {
+
+                            allSessions += ` Nome: ${session.session_name} \n\n id: ${session.session_id}`;
+
+                        });
+
+                        await this.say(allSessions);
+
+
                     }
 
                 }
 
                 return await verifySelectedOption[this.owner.message]();
+
+            },
+
+            'choice-session-name': async () => {
+
+                await this.say(`Ótimo ! esta sessão foi nomeada como ${this.owner.message}`);
+
+                this.memory.session_name = this.owner.message;
+
+                await this.say('Olá ! como posso ajudar você hoje ? ✌️')
+
+                this.owner.state = 'session';
 
             },
 
@@ -140,7 +166,7 @@ class Bot {
 
                             configs.responseProcessing = true;
 
-                            const { text, sessionId } = await session.createSession(this.owner);
+                            const { text, sessionId } = await session.createSession(this.owner,this.memory.session_name);
 
                             configs.responseProcessing = false;
 
@@ -173,6 +199,8 @@ class Bot {
 
 
                     }catch(err){
+
+                        console.log(err);
 
                         const { statusCode } = err as { statusCode: number };
 
