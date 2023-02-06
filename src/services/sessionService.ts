@@ -46,7 +46,10 @@ class SessionService {
                 message_id: messageId
             });
 
-            await this.repository.save(session)
+            await this.repository.save(session);
+
+            await this.disableOtherSessinons(phone);
+
 
         }else{
 
@@ -104,7 +107,7 @@ class SessionService {
 
     }
 
-    async setSessionWithCurrent(id: string){
+    async setSessionWithCurrent(id: string, phone: string){
 
         const find = this.findSession(id);
 
@@ -114,6 +117,8 @@ class SessionService {
 
         }
 
+        await this.disableOtherSessinons(phone);
+
         const session = await this.repository.update(id,{
             selected_session:'yes'
         });
@@ -122,13 +127,32 @@ class SessionService {
 
     }
 
-    async findSessions(phone: string){
+
+    async disableOtherSessinons(phone: string){
+
+        const activedSessions = await this.findSessions(phone,'yes');
+
+        activedSessions.forEach( session => this.repository.update( session.session_id, {
+            selected_session:'no'
+        }));
+
+    }
+
+    async findSessions(phone: string, selectedSession?: string){
 
         if( configs.connectionWithDb ){
 
-            const sessions = await this.repository.findBy({
-                phone
-            });
+            const sessions = await this.repository.find({
+                where:[
+                    {
+                        phone
+                    },
+                    {
+                        phone,
+                        selected_session: selectedSession
+                    }
+                ]
+            })
 
             return sessions;
 

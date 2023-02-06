@@ -187,6 +187,8 @@ class Bot {
 
                             this.say(botResponse);
 
+                            this.memory.newSession = false;
+
                             return
 
                         }
@@ -208,8 +210,6 @@ class Bot {
 
 
                     }catch(err){
-
-                        console.log(err);
 
                         const { statusCode } = err as { statusCode: number };
 
@@ -264,7 +264,7 @@ class Bot {
 
                 }
 
-                const session = await sessionService.setSessionWithCurrent(this.owner.message);
+                const session = await sessionService.setSessionWithCurrent(this.owner.message, this.owner.phone);
 
                 if( !session ){
 
