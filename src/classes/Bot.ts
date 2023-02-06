@@ -8,7 +8,7 @@ import User from './User.js';
 import Audio from './Audio.js';
 import session from './Session.js';
 
-import configs from '../configs/index.js';
+import configs from '../global/configs/index.js';
 import sessionService from '../services/sessionService.js';
 
 class Bot {
