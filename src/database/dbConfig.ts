@@ -4,7 +4,7 @@ import path from 'path';
 
 import { fileURLToPath } from 'url';
 
-import configs from "../configs/index.js";
+import configs from "../global/configs/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -44,7 +44,7 @@ async function ConnectToDabase(){
     }catch{
 
         console.log('🤖: Não foi possível se conectar ao banco de dados ! Logo, todos os IDS com os contextos das suas sessões serão armazenados em memória');
-        
+
         configs.connectionWithDb = false;
     }
 
