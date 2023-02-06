@@ -133,9 +133,18 @@ class SessionService {
 
         const activedSessions = await this.findSessions(phone,'yes');
 
-        activedSessions.forEach( session => this.repository.update( session.session_id, {
-            selected_session:'no'
-        }));
+        if( configs.connectionWithDb ){
+
+            activedSessions.forEach( session => this.repository.update( session.session_id, {
+                selected_session:'no'
+            }));
+
+            return;
+
+        }
+
+        activedSessions.forEach( session => session.selected_session = 'no');
+
 
     }
 
@@ -159,9 +168,12 @@ class SessionService {
 
         }
 
-        const sess = sessions.filter( session => session.phone === phone);
+        const session = sessions.filter( session => selectedSession ? session.session_id : session.phone === phone && session.selected_session === 'yes');
 
-        return sess;
+        return session;
+
+
+
 
     }
 
