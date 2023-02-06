@@ -2,10 +2,11 @@ import Session from "../models/Session.js";
 import { Repository } from "typeorm";
 
 import { GptSessions } from "../types/GptSessions.js";
-import configs from "../configs/index.js";
+import configs from "../global/configs/index.js";
 
 import { sessions } from "../database/index.js";
-import { sessionRepository } from "../repositories/sessionRepository.js";
+
+import AppDataSource from "../database/dbConfig.js";
 
 
 interface ICreateSession extends GptSessions {
@@ -28,7 +29,7 @@ class SessionService {
 
     constructor(){
 
-        this.repository = sessionRepository
+        this.repository = AppDataSource.getRepository(Session)
 
     }
 
