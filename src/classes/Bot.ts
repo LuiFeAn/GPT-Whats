@@ -107,7 +107,7 @@ class Bot {
 
                             await this.say(`*Nome: ${session.session_name.toUpperCase()}* *\nID desta sessão*`);
 
-                            await this.say(`*${session.session_id}*`);
+                            await this.say(`${session.session_id}`);
 
 
                         });
@@ -181,7 +181,7 @@ class Bot {
 
                             await this.say('*Você acaba de criar uma nova sessão. Utilize o ID abaixo para eu recuperar o contexto desta sessão posteriormente:* ');
 
-                            await this.say(`*${sessionId.toString()}*`);
+                            await this.say(`${sessionId.toString()}`);
 
                             botResponse = text;
 
