@@ -49,9 +49,7 @@ class Bot {
 
                 if( !validInitialMessages.includes(this.owner.message) ){
 
-                   await this.say('Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
-
-                   return
+                    return await this.say('Por favor, escolha uma das opções válidas das quais citei a cima 😊 !');
 
                 }
 
@@ -72,9 +70,7 @@ class Bot {
 
                         if( !configs.connectionWithDb ){
 
-                            await this.say('Não estou conectado a um banco de dados propriamente dito no momento. Tente novamente mais tarde !');
-
-                            return;
+                            return await this.say('Não estou conectado a um banco de dados propriamente dito no momento. Tente novamente mais tarde !');
 
                         }
 
@@ -94,9 +90,7 @@ class Bot {
 
                         if( this.owner.sessions.length === 0 ){
 
-                            await this.say('Você não possui nenhuma sessão no momento.');
-
-                            return
+                            return await this.say('Você não possui nenhuma sessão no momento.');
 
                         }
 
@@ -144,23 +138,19 @@ class Bot {
 
                 if( !this.options.audio ){
 
-                    await this.say('*Digitando...*');
+                    return await this.say('*Digitando...*');
 
                 }
 
                 if( configs.responseProcessing ){
 
-                    await this.say('Por favor, aguarde. No momento estou processando uma resposta.\nIsso se dá porquê a OpenIA só me permite responder uma mensagem por vez. ✌');
-
-                    return
+                    return await this.say('Por favor, aguarde. No momento estou processando uma resposta.\nIsso se dá porquê a OpenIA só me permite responder uma mensagem por vez. ✌');
 
                 }
 
                 if( this.owner.message[0] === '/' ){
 
-                    await this.commands(this.owner.message);
-
-                    return;
+                    return await this.commands(this.owner.message);
 
                 }
 
@@ -201,9 +191,7 @@ class Bot {
 
                             configs.responseProcessing = false;
 
-                            this.say(botResponse);
-
-                            return
+                            return await this.say(botResponse);
 
 
                         }
@@ -215,9 +203,7 @@ class Bot {
 
                         if( statusCode === 429 ){
 
-                            await this.say('Parece que no momento os servidores da OpenIA estão sobrecarregados. Por favor, tente movamente mais tarde ! 💕')
-
-                            return
+                            return await this.say('Parece que no momento os servidores da OpenIA estão sobrecarregados. Por favor, tente movamente mais tarde ! 💕')
 
                         }
 
@@ -242,13 +228,11 @@ class Bot {
 
                 if( !validLenguages.includes(this.owner.message.toLowerCase()) ){
 
-                    this.say('A linguagem selecionada é inválida !');
-
-                    return;
+                    return await this.say('A linguagem selecionada é inválida !');
 
                 }
 
-                await this.say(`Ótimo ! irei responder você em ${this.owner.message}`)
+                await this.say(`Ótimo ! irei responder você em ${this.owner.message}`);
 
                 this.options.language = this.owner.message;
 
@@ -260,7 +244,7 @@ class Bot {
 
                 if( !validUUID(this.owner.message)){
 
-                    return this.say('Este não é um ID válido. Por favor, me força o ID correto.');
+                    return await this.say('Este não é um ID válido. Por favor, me força o ID correto.');
 
                 }
 
@@ -268,9 +252,7 @@ class Bot {
 
                 if( !session ){
 
-                    this.say('Esta sessão não existe');
-
-                    return;
+                    return await this.say('Esta sessão não existe');
 
                 }
 
@@ -278,7 +260,7 @@ class Bot {
 
                 this.owner.state = 'session';
 
-                return;
+
 
             }
 
@@ -298,11 +280,10 @@ class Bot {
 
                 const media = await Audio.textToSpeech(message,this.options.language!);
 
-                await whats.sendMessage(this.owner.phone,media,{
+                return await whats.sendMessage(this.owner.phone,media,{
                     sendAudioAsVoice: true
                 });
 
-                return;
 
             }
 
@@ -320,9 +301,6 @@ class Bot {
     }
 
     async commands(message: string){
-
-
-        (message as '/audio: ativado' | '/audio: desativado');
 
         message.toLocaleLowerCase();
 
