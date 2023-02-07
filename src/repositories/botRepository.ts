@@ -1,11 +1,11 @@
-import User from "../classes/User.js";
+import User from "../lib/User.js";
 
 export interface IBotInstance {
 
     owner: User
 }
 
-import Bot from "../classes/Bot.js";
+import Bot from "../lib/Bot.js";
 import { bots } from "../database/index.js";
 
 class BotRepository {

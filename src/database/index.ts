@@ -1,5 +1,5 @@
-import Bot from "../classes/Bot.js";
-import User from "../classes/User.js";
+import Bot from "../lib/Bot.js";
+import User from "../lib/User.js";
 import Session from "../models/Session.js";
 
 export const users: User [] = [];
