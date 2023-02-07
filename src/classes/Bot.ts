@@ -175,7 +175,7 @@ class Bot {
 
                             botResponse = text;
 
-                            this.say(botResponse);
+                            await this.say(botResponse);
 
                             this.memory.newSession = false;
 
@@ -355,7 +355,7 @@ class Bot {
 
         }catch(err){
 
-            this.say("Ops ! não entendi qual comando você gostaria de executar. Deseja vizualizar a minha lista de comandos ?");
+            await this.say("Ops ! não entendi qual comando você gostaria de executar. Deseja vizualizar a minha lista de comandos ?");
 
         }
 
