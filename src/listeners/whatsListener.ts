@@ -60,6 +60,12 @@ class WhatsListener {
 
        if( bot && user ){
 
+            if( body[0] === '/' ){
+
+                return await bot.commands(body);
+
+            }
+
             //Busca toas as sessões referentes a aquele usuário pelo seu número de telefone
             const sessions = await sessionService.findSessions(phone);
 
