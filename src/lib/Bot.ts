@@ -138,7 +138,7 @@ class Bot {
 
                 if( !this.options.audio ){
 
-                    return await this.say('*Digitando...*');
+                    await this.say('*Digitando...*');
 
                 }
 
