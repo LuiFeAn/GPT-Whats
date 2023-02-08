@@ -16,6 +16,7 @@ class Bot {
     owner: User
     private options: BotOptions;
     private memory: BotMemory
+    private lenguages: string []
 
     constructor(owner: User ,options: BotOptions = { audio: false, language: 'pt-br' }){
 
@@ -25,6 +26,7 @@ class Bot {
             session_name:'',
             newSession:false,
         }
+        this.lenguages = ['PT-BR','EN-US'];
 
 
     }
@@ -111,7 +113,7 @@ class Bot {
 
                     '5': async () => {
 
-                        await this.say('Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio*');
+                        await this.say('Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio* \n\n */mudar idioma - Você poderá escolher em qual sotaque deseja que eu envie áudios* \n\n */voltar ao ínicio: Você poderia escolher novamente qual opção deseja*');
 
 
                     }
@@ -224,9 +226,7 @@ class Bot {
 
             'lenguage-choice': async () => {
 
-                const validLenguages = ['pt-br','en-us'];
-
-                if( !validLenguages.includes(this.owner.message.toLowerCase()) ){
+                if( !this.lenguages.includes(this.owner.message.toLowerCase()) ){
 
                     return await this.say('A linguagem selecionada é inválida !');
 
@@ -344,6 +344,32 @@ class Bot {
 
 
             },
+
+            '/mudar idioma': async () => {
+
+                if( !this.options.audio ){
+
+                    return this.say('O áudio não está ativado no momento para que eu possa trocar de idioma');
+
+                }
+
+                await this.say('Para qual idioma você gostaria de trocar ?');
+
+                this.owner.state = 'lenguage-choice';
+
+
+
+            },
+
+            '/voltar ao início': async () => {
+
+                await this.say('Claro, irei votar ao início');
+
+                this.owner.state = 'select-option';
+
+                await this.say('Pronto ! agora você pode escolher novamente uma das opções que listei anteriormente');
+
+            }
 
 
 
