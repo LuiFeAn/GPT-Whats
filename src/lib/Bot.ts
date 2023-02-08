@@ -17,6 +17,7 @@ class Bot {
     private options: BotOptions;
     private memory: BotMemory
     private lenguages: string []
+    private connected: boolean
 
     constructor(owner: User ,options: BotOptions = { audio: false, language: 'pt-br' }){
 
@@ -26,7 +27,8 @@ class Bot {
             session_name:'',
             newSession:false,
         }
-        this.lenguages = ['PT-BR','EN-US'];
+        this.lenguages = ['pt-br','en-us'];
+        this.connected = false;
 
 
     }
@@ -40,7 +42,7 @@ class Bot {
 
                 await this.say('Olá. me chamo Wrench. Sou um assistente virtual que faz uso do Chat GPT para enviar minhas respostas.');
 
-                this.say("Me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Sessões anteriores* \n\n *5 - Lista de comandos (Funcionam apenas após o início ou recuperação de uma sessão)*");
+                this.say("Me informe o que você deseja. \n \n *1 - Criar uma Nova Sessão* \n\n *2 - Recuperar uma sessão* \n\n *3 - O que são sessões ?* \n\n *4 - Sessões anteriores* \n\n *5 - Lista de comandos*");
 
                 this.owner.state = 'select-option';
             },
@@ -150,12 +152,6 @@ class Bot {
 
                 }
 
-                if( this.owner.message[0] === '/' ){
-
-                    return await this.commands(this.owner.message);
-
-                }
-
                 let botResponse: any;
 
                 if( !this.owner.message.includes('/') ){
@@ -168,6 +164,8 @@ class Bot {
                             configs.responseProcessing = true;
 
                             const { text, sessionId } = await session.createSession(this.owner,this.memory.session_name);
+
+                            this.connected = true;
 
                             configs.responseProcessing = false;
 
@@ -191,6 +189,8 @@ class Bot {
 
                             botResponse = await session.getSession(this.owner);
 
+                            this.connected = true;
+
                             configs.responseProcessing = false;
 
                             return await this.say(botResponse);
@@ -202,6 +202,8 @@ class Bot {
                     }catch(err){
 
                         const { statusCode } = err as { statusCode: number };
+
+                        this.connected = false;
 
                         if( statusCode === 429 ){
 
@@ -235,6 +237,14 @@ class Bot {
                 await this.say(`Ótimo ! irei responder você em ${this.owner.message}`);
 
                 this.options.language = this.owner.message;
+
+                if( !this.connected ){
+
+                    this.owner.state = 'select-option';
+                    
+                    return await this.say('Não consegui encontrar uma conexão com os servidores da OpenIA. Logo, não posso responder suas mensagens no momento.');
+
+                }
 
                 this.owner.state = 'session';
 
@@ -362,6 +372,13 @@ class Bot {
             },
 
             '/voltar ao início': async () => {
+
+
+                if( this.owner.state === 'select-option' ){
+
+                    return this.say('Você já está no início');
+
+                }
 
                 await this.say('Claro, irei votar ao início');
 
