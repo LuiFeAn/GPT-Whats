@@ -1,2 +1,2 @@
 
-export type State = 'welcome' | 'select-option' | 'session' | 'lenguage-choice' | 'find-session' | 'choice-session-name';
+export type State = 'welcome' | 'select-option' | 'session' | 'lenguage-choice' | 'find-session' | 'choice-session-name' | 'download-youtube-video';

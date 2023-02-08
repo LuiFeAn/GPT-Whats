@@ -11,6 +11,10 @@ import session from './Session.js';
 import configs from '../global/configs/index.js';
 import sessionService from '../services/sessionService.js';
 
+import Downloader from './Downloader.js';
+
+import Whatsapp from 'whatsapp-web.js';
+
 class Bot {
 
     owner: User
@@ -241,7 +245,7 @@ class Bot {
                 if( !this.connected ){
 
                     this.owner.state = 'select-option';
-                    
+
                     return await this.say('Não consegui encontrar uma conexão com os servidores da OpenIA. Logo, não posso responder suas mensagens no momento.');
 
                 }
@@ -272,6 +276,30 @@ class Bot {
 
 
 
+            },
+
+            'download-youtube-video': async () => {
+
+
+                await this.say('Aguarde... estou processando seu vídeo');
+
+                try {
+
+                    const media = await Downloader.youtubeDownload(this.owner.message);
+
+                    await this.say(media);
+
+                }catch(err){
+
+                    console.log(err);
+
+                    this.owner.state = 'select-option';
+
+                    return await this.say('Não foi possível processar seu vídeo');
+
+                }
+
+
             }
 
         }
@@ -282,16 +310,16 @@ class Bot {
     }
 
 
-    async say(message: string){
+    async say(message: string | Whatsapp.MessageMedia ){
 
         try{
 
-            if( this.options.audio ){
+            if( this.options.audio && typeof message === 'string' ){
 
                 const media = await Audio.textToSpeech(message,this.options.language!);
 
                 return await whats.sendMessage(this.owner.phone,media,{
-                    sendAudioAsVoice: true
+                    sendAudioAsVoice: true,
                 });
 
 
@@ -386,7 +414,15 @@ class Bot {
 
                 await this.say('Pronto ! agora você pode escolher novamente uma das opções que listei anteriormente');
 
-            }
+            },
+
+            '/download: youtube': async () => {
+
+                await this.say('Por favor, me forneça o link do vídeo que você deseja baixar');
+
+                this.owner.state = 'download-youtube-video';
+
+            },
 
 
 
