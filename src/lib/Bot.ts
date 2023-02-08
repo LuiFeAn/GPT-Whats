@@ -113,7 +113,7 @@ class Bot {
 
                     '5': async () => {
 
-                        await this.say('Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio* \n\n */mudar idioma - Você poderá escolher em qual sotaque deseja que eu envie áudios* \n\n */voltar ao início Se estiver em uma sessão, você poderá escolher novamente qual opção deseja* \n\n Observação: \n *Certifique-se de que a opção selecionada esteja escrita exatamente como foi listada. Do contrário, poderei não entender o que você deseja*');
+                        await this.say('Abaixo você pode ver uma lista de comandos que eu possuo ! \n\n */audio: ativado - Ativa o envio das minhas mensagens por áudio* \n\n */audio: desativado - Desativa o envio das minhas mensagens por áudio* \n\n */mudar idioma - Você poderá escolher em qual sotaque deseja que eu envie áudios* \n\n */voltar ao início Se estiver em uma sessão, você poderá escolher novamente qual opção deseja* \n\n Observação: \n *Certifique-se de que o comando selecionado esteja escrito exatamente como foi listado. Do contrário, poderei não entender o que você deseja*');
 
 
                     }
