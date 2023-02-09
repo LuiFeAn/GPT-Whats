@@ -16,19 +16,18 @@ const __dirname = path.dirname(__filename);
 class Downloader {
 
 
-    static async youtubeDownload(link: string): Promise<Whatsapp.MessageMedia> {
+    async youtubeDownload(link: string): Promise<Whatsapp.MessageMedia> {
 
 
         const id = v4();
 
         const file = path.join(__dirname,'../../',`/media/${id}.mp4`);
 
-        return await new Promise( ( resolve, reject ) => {
+        return new Promise( ( resolve, reject ) => {
 
-            const ok = ytdl(link)
-            .pipe(fs.createWriteStream(file));
+            const writeSteam = ytdl(link).pipe(fs.createWriteStream(file));
 
-            ok.on('finish', () => {
+            writeSteam.on('finish', () => {
 
                 const media = Whatsapp.MessageMedia.fromFilePath(file);
 
@@ -36,7 +35,7 @@ class Downloader {
 
             });
 
-            ok.on('error', error => reject(error) );
+            writeSteam.on('error', error => reject(error) );
 
 
         });
@@ -48,4 +47,4 @@ class Downloader {
 
 }
 
-export default Downloader;
+export default new Downloader();
