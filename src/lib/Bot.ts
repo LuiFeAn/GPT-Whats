@@ -283,21 +283,9 @@ class Bot {
 
                 await this.say('Aguarde... estou processando seu vídeo');
 
-                try {
+                const media = await Downloader.youtubeDownload(this.owner.message);
 
-                    const media = await Downloader.youtubeDownload(this.owner.message);
-
-                    await this.say(media);
-
-                }catch(err){
-
-                    console.log(err);
-
-                    this.owner.state = 'select-option';
-
-                    return await this.say('Não foi possível processar seu vídeo');
-
-                }
+                await this.say(media);
 
 
             }
