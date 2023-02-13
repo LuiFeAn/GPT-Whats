@@ -24,7 +24,7 @@
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.11",
     "uuid": "^9.0.0",
-    "whatsapp-web.js": "^1.19.3",
+    "whatsapp-web.js": "^1.19.4",
     "ytdl-core": "^4.11.2"
   },
   "devDependencies": {
